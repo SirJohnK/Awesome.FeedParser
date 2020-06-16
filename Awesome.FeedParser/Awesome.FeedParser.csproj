@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Authors>Johan Svensson</Authors>
+    <Company></Company>
+    <Copyright>© 2020 Johan Svensson All Rights Reserved</Copyright>
+    <RootNamespace>Awesome.FeedParser</RootNamespace>
+    <ApplicationIcon>sirjohnk.ico</ApplicationIcon>
+    <Title>Awesome.FeedParser</Title>
+    <Description>A awesome feed parser library.</Description>
+    <PackageProjectUrl>https://github.com/SirJohnK/Awesome.FeedParser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SirJohnK/Awesome.FeedParser</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>sirjohnk.png</PackageIcon>
+    <PackageTags>dotnet,dotnet-standard</PackageTags>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE" Pack="True" PackagePath="" />
+    <None Include="sirjohnk.png" Pack="True" PackagePath="" />
+  </ItemGroup>
+</Project>
