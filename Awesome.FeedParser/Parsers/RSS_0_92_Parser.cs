@@ -6,11 +6,11 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Parsers
 {
-    public sealed class Rss1Parser : IParser
+    public sealed class RSS_0_92_Parser : IParser
     {
-        public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new Rss1Parser());
+        public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_0_92_Parser());
 
-        private Rss1Parser()
+        private RSS_0_92_Parser()
         {
         }
 

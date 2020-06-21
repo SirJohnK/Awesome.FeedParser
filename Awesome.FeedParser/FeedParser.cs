@@ -28,16 +28,11 @@ namespace Awesome.FeedParser
         };
 
         /// <summary>
-        /// Parse root node to determine feed type.
+        /// Parse root node to determine feed type and feed parser.
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="feed"></param>
         /// <returns>Specific Feed type parser.</returns>
-        /// <remarks>
-        /// RSS1 = <rss version="1.0">
-        /// RSS2 = <rss version="2.0">
-        /// Atom = <feed xmlns="http://www.w3.org/2005/Atom">
-        /// </remarks>
         private static Lazy<IParser>? ParseFeedType(XmlReader reader, Feed feed)
         {
             //Init
@@ -46,19 +41,33 @@ namespace Awesome.FeedParser
             //Determine Feed Type
             switch (reader.Name)
             {
+                case "rdf:RDF":
+                    if (string.Equals(reader.GetAttribute("xmlns:rdf"), @"http://www.w3.org/1999/02/22-rdf-syntax-ns#") &&
+                        string.Equals(reader.GetAttribute("xmlns"), @"http://purl.org/rss/1.0/"))
+                    {
+                        feed.Type = FeedType.RSS_1_0;
+                        feedTypeParser = RSS_1_0_Parser.Instance;
+                    }
+                    break;
+
                 case "rss":
                     //Get RSS version number
                     var version = reader.GetAttribute("version");
                     switch (version)
                     {
-                        case "1.0":
-                            feed.Type = FeedType.RSS1;
-                            feedTypeParser = Rss1Parser.Instance;
+                        case "0.91":
+                            feed.Type = FeedType.RSS_0_91;
+                            feedTypeParser = RSS_0_91_Parser.Instance;
+                            break;
+
+                        case "0.92":
+                            feed.Type = FeedType.RSS_0_92;
+                            feedTypeParser = RSS_0_92_Parser.Instance;
                             break;
 
                         case "2.0":
-                            feed.Type = FeedType.RSS2;
-                            feedTypeParser = Rss2Parser.Instance;
+                            feed.Type = FeedType.RSS_2_0;
+                            feedTypeParser = RSS_2_0_Parser.Instance;
                             break;
                     }
                     break;
@@ -70,24 +79,23 @@ namespace Awesome.FeedParser
                         feedTypeParser = AtomParser.Instance;
                     }
                     break;
+
+                default:
+                    feed.Type = FeedType.Unknown;
+                    feedTypeParser = RSS_0_91_Parser.Instance;
+                    break;
             }
 
             //Return Feed Type Parser
             return feedTypeParser;
         }
 
-        //private static Task<bool> Parse(string name, XmlReader reader, Feed feed, Lazy<IParser> parser)
-        //{
-        //    //Feed or Item Node?
-        //    return feed.CurrentItem == null ? parser.Value.Parse(name, reader, feed) : parser.Value.Parse(name, reader, feed.CurrentItem);
-        //}
-
         public static async Task<Feed> ParseFeedAsync(string source, Stream stream, CancellationToken cancellationToken)
         {
             //Init
             bool parseNode;
             var feed = new Feed();
-            var defaultParser = Rss1Parser.Instance;
+            var defaultParser = RSS_0_91_Parser.Instance;
             var settings = new XmlReaderSettings() { CloseInput = true, ConformanceLevel = ConformanceLevel.Document, IgnoreWhitespace = true, IgnoreComments = true, Async = true };
             using var reader = XmlReader.Create(stream, settings);
 

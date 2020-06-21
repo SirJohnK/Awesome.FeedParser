@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Awesome.FeedParser.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Awesome.FeedParser.Interfaces
 {
-    public interface ICommonFeed
+    internal interface ICommonFeed
     {
-        public string? Title { get; set; }
-        public Uri? Link { get; set; }
-        public string? Description { get; set; }
-        public DateTime? PubDate { get; set; }
+        internal string? Title { get; set; }
+        internal string? Description { get; set; }
+        internal Uri? Link { get; set; }
+        internal DateTime? PubDate { get; set; }
+        internal List<FeedCategory>? Categories { get; set; }
     }
 }

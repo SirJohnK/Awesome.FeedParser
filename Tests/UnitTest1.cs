@@ -18,5 +18,15 @@ namespace Tests
             //Assert
             feed.Should().NotBeNull();
         }
+
+        [TestMethod]
+        public async Task TestMethod2()
+        {
+            //Init
+            var feed = await FeedParser.ParseFeedAsync(@"https://feed.khz.se/nordigt", CancellationToken.None);
+
+            //Assert
+            feed.Should().NotBeNull();
+        }
     }
 }
