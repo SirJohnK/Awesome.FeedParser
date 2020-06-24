@@ -1,18 +1,76 @@
-﻿using System.Collections.Generic;
+﻿using Awesome.FeedParser.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Awesome.FeedParser.Models
 {
-    public class ITunesFeed
+    public class ITunesFeed : ICommonITunes
     {
-        public string? Author { get; set; }
+        /// <summary>
+        /// The group responsible for creating the show.
+        /// </summary>
+        public string? Author { get; internal set; }
+
+        string? ICommonITunes.Author { get => Author; set => Author = value; }
+
+        /// <summary>
+        /// The podcast show or hide status. (True/False)
+        /// </summary>
         public bool? Block { get; set; }
-        public Dictionary<string, IEnumerable<string>>? Category { get; set; }
-        public bool? Explicit { get; set; }
-        public string? Image { get; set; }
-        public IEnumerable<string>? Keywords { get; set; }
-        public string? NewFeedUrl { get; set; }
-        public string? Owner { get; set; }
-        public string? Subtitle { get; set; }
-        public string? Summary { get; set; }
+
+        bool? ICommonITunes.Block { get => Block; set => Block = value; }
+
+        /// <summary>
+        /// The show category information.
+        /// </summary>
+        public Dictionary<string, IEnumerable<string>>? Category { get; internal set; }
+
+        /// <summary>
+        /// The podcast parental advisory information. Explicit language or adult content (True/False),
+        /// </summary>
+        public bool? Explicit { get; internal set; }
+
+        bool? ICommonITunes.Explicit { get => Explicit; set => Explicit = value; }
+
+        /// <summary>
+        /// The artwork for the show.
+        /// </summary>
+        public FeedImage? Image { get; internal set; }
+
+        FeedImage? ICommonITunes.Image { get => Image; set => Image = value; }
+
+        public IEnumerable<string>? Keywords { get; internal set; }
+        IEnumerable<string>? ICommonITunes.Keywords { get => Keywords; set => Keywords = value; }
+
+        /// <summary>
+        /// The new podcast RSS Feed URL.
+        /// </summary>
+        public Uri? NewFeedUrl { get; internal set; }
+
+        /// <summary>
+        /// The podcast owner contact information. Name and Email address.
+        /// </summary>
+        public ITunesOwner? Owner { get; internal set; }
+
+        /// <summary>
+        /// The show title specific for Apple Podcasts.
+        /// </summary>
+        public string? Title { get; internal set; }
+
+        string? ICommonITunes.Title { get => Title; set => Title = value; }
+
+        public string? Subtitle { get; internal set; }
+        string? ICommonITunes.Subtitle { get => Subtitle; set => Subtitle = value; }
+
+        public string? Summary { get; internal set; }
+        string? ICommonITunes.Summary { get => Summary; set => Summary = value; }
+
+        /// <summary>
+        /// The type of show. Episodic (default) / Serial.
+        /// </summary>
+        public ITunesType Type { get; internal set; } = ITunesType.Episodic;
+
+        public RegionInfo? CountryOfOrigin { get; internal set; }
     }
 }

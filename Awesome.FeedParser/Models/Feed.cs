@@ -177,6 +177,11 @@ namespace Awesome.FeedParser.Models
         #region internal
 
         /// <summary>
+        /// Internal property for current parse type. (Root feed level or feed item level)
+        /// </summary>
+        internal ParseType CurrentParseType => CurrentItem != null ? ParseType.Item : ParseType.Feed;
+
+        /// <summary>
         /// Internal property for the current item being parsed
         /// </summary>
         internal FeedItem? CurrentItem { get; set; }

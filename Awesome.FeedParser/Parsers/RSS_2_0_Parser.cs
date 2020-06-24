@@ -36,15 +36,15 @@ namespace Awesome.FeedParser.Parsers
 
                     #region Required
 
-                    case "title": //The name of the feed.
+                    case "title": //The name of the feed/item.
                         target.Title = await reader.ReadElementContentAsStringAsync();
                         break;
 
-                    case "description": //Phrase or sentence describing the feed.
+                    case "description": //Phrase or sentence describing the feed/item.
                         target.Description = await reader.ReadElementContentAsStringAsync();
                         break;
 
-                    case "link": //The URL to the HTML website corresponding to the feed.
+                    case "link": //The URL to the HTML website corresponding to the feed/item.
                         target.Link = new Uri(await reader.ReadElementContentAsStringAsync());
                         break;
 
@@ -56,7 +56,7 @@ namespace Awesome.FeedParser.Parsers
 
                     #region Common
 
-                    case "pubDate": //The publication date for the content in the feed.
+                    case "pubDate": //The publication date for the content in the feed/item.
                         if (DateTime.TryParse(await reader.ReadElementContentAsStringAsync(), CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var pubDate))
                             target.PubDate = pubDate;
                         break;
@@ -250,7 +250,7 @@ namespace Awesome.FeedParser.Parsers
 
                     #endregion Optional
 
-                    default: //Unknown feed node, continue to next.
+                    default: //Unknown feed/item node, continue to next.
                         result = false;
                         break;
                 }
