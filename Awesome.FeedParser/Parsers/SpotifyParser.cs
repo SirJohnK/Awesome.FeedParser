@@ -3,6 +3,7 @@ using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -75,16 +76,16 @@ namespace Awesome.FeedParser.Parsers
                         }
                         break;
 
-                    case "countryOfOrigin": //Podcast country of origin ISO 3166 code.
+                    case "countryOfOrigin": //Defines the intended market/territory ranked in order of priority where the podcast is relevant to the consumer. (List of ISO 3166 codes).
                         {
                             if (feed.Spotify != null)
                             {
-                                //Get Country of origin
+                                //Get Countries of origin
                                 var content = await reader.ReadElementContentAsStringAsync();
                                 try
                                 {
-                                    //Attempt to set country of origin
-                                    feed.Spotify.CountryOfOrigin = new RegionInfo(content);
+                                    //Attempt to set country of origin list
+                                    feed.Spotify.CountryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country));
                                 }
                                 catch (ArgumentException ex)
                                 {

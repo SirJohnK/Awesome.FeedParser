@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace Awesome.FeedParser.Models
 {
@@ -13,8 +14,8 @@ namespace Awesome.FeedParser.Models
         public int? Limit { get; internal set; }
 
         /// <summary>
-        /// Podcast country of origin ISO 3166 code.
+        /// Defines the intended market/territory ranked in order of priority where the podcast is relevant to the consumer. (List of ISO 3166 codes).
         /// </summary>
-        public RegionInfo? CountryOfOrigin { get; internal set; }
+        public IEnumerable<RegionInfo>? CountryOfOrigin { get; internal set; }
     }
 }
