@@ -5,9 +5,24 @@ using System.Net.Mail;
 
 namespace Awesome.FeedParser.Models
 {
-    public class FeedItem : IRSS_0_91_Item, ICommonFeed
+    /// <summary>
+    /// Main Feed Parser Item Result Class.
+    /// </summary>
+    public class FeedItem : IRSS_0_91_Item, IRSS_0_92_Item, IRSS_1_0_Item, IRSS_2_0_Item, IAtomEntry, ICommonFeed
     {
+        /// <summary>
+        /// Parsed feed item content types (enum flags)
+        /// </summary>
+        public FeedContentType ContentType { get; internal set; } = FeedContentType.Basic;
+
+        FeedContentType ICommonFeed.ContentType { get => ContentType; set => ContentType = value; }
+
         #region Required
+
+        /// <summary>
+        /// Url to information about feed item. (RSS 1.0 Only)
+        /// </summary>
+        public string? About { get; internal set; }
 
         /// <summary>
         /// The name of the feed item.
@@ -80,9 +95,14 @@ namespace Awesome.FeedParser.Models
 
         #endregion Optional
 
-        //iTunes
+        /// <summary>
+        /// Flag indicatig if feed item has iTunes information.
+        /// </summary>
         public bool HasITunes => ITunes != null;
 
+        /// <summary>
+        /// The iTunes specific feed item information.
+        /// </summary>
         public ITunesItem? ITunes { get; internal set; }
     }
 }

@@ -22,6 +22,15 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public FeedContentType ContentType { get; internal set; } = FeedContentType.Basic;
 
+        FeedContentType ICommonFeed.ContentType { get => ContentType; set => ContentType = value; }
+
+        public bool HasParseErrors => ParseError != null;
+
+        public List<ParseError>? ParseError { get; internal set; }
+
+        /// <summary>
+        /// Url to information about feed. (RSS 1.0 Only)
+        /// </summary>
         public string? About { get; internal set; }
 
         /// <summary>
@@ -169,9 +178,14 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         IEnumerable<IAtomEntry> IAtomFeed.Entries => Items.Cast<IAtomEntry>();
 
-        //iTunes
+        /// <summary>
+        /// Flag indicatig if feed has iTunes information.
+        /// </summary>
         public bool HasITunes => ITunes != null;
 
+        /// <summary>
+        /// The iTunes specific feed information.
+        /// </summary>
         public ITunesFeed? ITunes { get; internal set; }
 
         #region internal

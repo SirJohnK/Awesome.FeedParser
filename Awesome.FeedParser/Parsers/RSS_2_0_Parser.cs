@@ -10,7 +10,10 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Parsers
 {
-    public sealed class RSS_2_0_Parser : IParser
+    /// <summary>
+    /// Parser for RSS 2.0 feed nodes.
+    /// </summary>
+    internal sealed class RSS_2_0_Parser : BaseParser
     {
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_2_0_Parser());
 
@@ -18,14 +21,17 @@ namespace Awesome.FeedParser.Parsers
         {
         }
 
-        public async Task<bool> Parse(XmlReader reader, Feed feed)
+        public override async Task<bool> Parse(XmlReader reader, Feed feed)
         {
             //Init
             bool result;
 
             //Verify Element Node
-            if (result = reader.NodeType == XmlNodeType.Element)
+            if (result = reader.NodeType == XmlNodeType.Element && (!reader.IsEmptyElement || reader.HasAttributes))
             {
+                //Init
+                NodeInformation nodeInfo = reader.NodeInformation();
+
                 //Set common feed target
                 ICommonFeed target = feed.CurrentItem ?? (ICommonFeed)feed;
 
@@ -35,6 +41,9 @@ namespace Awesome.FeedParser.Parsers
                     //Required Nodes
 
                     #region Required
+
+                    //Feed root node.
+                    case "channel": result = false; break;
 
                     case "title": //The name of the feed/item.
                         target.Title = await reader.ReadElementContentAsStringAsync();
@@ -117,23 +126,20 @@ namespace Awesome.FeedParser.Parsers
                         break;
 
                     case "image": //Specifies a GIF, JPEG or PNG image that can be displayed with the feed.
-                        if (!reader.IsEmptyElement)
+                        //Get image properties
+                        var image = new FeedImage();
+                        var imageElements = await reader.AllSubTreeElements();
+                        foreach (var element in imageElements)
                         {
-                            //Get image properties
-                            var image = new FeedImage();
-                            var properties = await reader.AllSubTreeElements();
-                            foreach (var element in properties)
-                            {
-                                if (element.Key.Equals("title")) image.Title = element.Value;
-                                else if (element.Key.Equals("description")) image.Description = element.Value;
-                                else if (element.Key.Equals("url")) image.Url = new Uri(element.Value);
-                                else if (element.Key.Equals("link")) image.Link = new Uri(element.Value);
-                                else if (element.Key.Equals("width") && int.TryParse(element.Value, out var width)) image.Width = width;
-                                else if (element.Key.Equals("height") && int.TryParse(element.Value, out var height)) image.Height = height;
-                            }
-                            feed.Image = image;
-                            await reader.SkipAsync();
+                            if (element.Key.Equals("title")) image.Title = element.Value;
+                            else if (element.Key.Equals("description")) image.Description = element.Value;
+                            else if (element.Key.Equals("url")) image.Url = new Uri(element.Value);
+                            else if (element.Key.Equals("link")) image.Link = new Uri(element.Value);
+                            else if (element.Key.Equals("width") && int.TryParse(element.Value, out var width)) image.Width = width;
+                            else if (element.Key.Equals("height") && int.TryParse(element.Value, out var height)) image.Height = height;
                         }
+                        feed.Image = image;
+                        await reader.SkipAsync();
                         break;
 
                     case "rating": //Protocol for Web Description Resources (POWDER)
@@ -141,64 +147,55 @@ namespace Awesome.FeedParser.Parsers
                         break;
 
                     case "textInput": //Specifies a text input box that can be displayed with the feed.
-                        if (!reader.IsEmptyElement)
+                        //Get text input properties
+                        var textInput = new FeedTextInput();
+                        var textInputElements = await reader.AllSubTreeElements();
+                        foreach (var element in textInputElements)
                         {
-                            //Get text input properties
-                            var textInput = new FeedTextInput();
-                            var properties = await reader.AllSubTreeElements();
-                            foreach (var element in properties)
-                            {
-                                if (element.Key.Equals("description")) textInput.Description = element.Value;
-                                else if (element.Key.Equals("link")) textInput.Link = new Uri(element.Value);
-                                else if (element.Key.Equals("name")) textInput.Name = element.Value;
-                                else if (element.Key.Equals("title")) textInput.Title = element.Value;
-                            }
-                            feed.TextInput = textInput;
-                            await reader.SkipAsync();
+                            if (element.Key.Equals("description")) textInput.Description = element.Value;
+                            else if (element.Key.Equals("link")) textInput.Link = new Uri(element.Value);
+                            else if (element.Key.Equals("name")) textInput.Name = element.Value;
+                            else if (element.Key.Equals("title")) textInput.Title = element.Value;
                         }
+                        feed.TextInput = textInput;
+                        await reader.SkipAsync();
                         break;
 
                     case "skipHours": //Identifies the hours of the day during which the feed is not updated.
-                        if (!reader.IsEmptyElement)
+                        //Get skip hours
+                        var skipHours = new List<int>();
+                        var skipHoursElements = await reader.AllSubTreeElements();
+                        foreach (var element in skipHoursElements)
                         {
-                            //Get skip hours
-                            var skipHours = new List<int>();
-                            var properties = await reader.AllSubTreeElements();
-                            foreach (var element in properties)
-                            {
-                                if (element.Key.Equals("hour") && int.TryParse(element.Value, out var hour))
-                                    skipHours.Add(hour);
-                            }
-                            feed.SkipHours = skipHours;
-                            await reader.SkipAsync();
+                            if (element.Key.Equals("hour") && int.TryParse(element.Value, out var hour))
+                                skipHours.Add(hour);
                         }
+                        feed.SkipHours = skipHours;
+                        await reader.SkipAsync();
                         break;
 
                     case "skipDays": //Identifies days of the week during which the feed is not updated.
-                        if (!reader.IsEmptyElement)
+                        //Get skip days
+                        var skipDays = WeekDays.None;
+                        var skipDaysElements = await reader.AllSubTreeElements();
+                        foreach (var element in skipDaysElements)
                         {
-                            //Get skip days
-                            var skipDays = WeekDays.None;
-                            var properties = await reader.AllSubTreeElements();
-                            foreach (var element in properties)
+                            if (element.Key.Equals("day"))
                             {
-                                if (element.Key.Equals("day"))
+                                switch (element.Value)
                                 {
-                                    switch (element.Value)
-                                    {
-                                        case "Monday": skipDays |= WeekDays.Monday; break;
-                                        case "Tuesday": skipDays |= WeekDays.Tuesday; break;
-                                        case "Wednesday": skipDays |= WeekDays.Wednesday; break;
-                                        case "Thursday": skipDays |= WeekDays.Thursday; break;
-                                        case "Friday": skipDays |= WeekDays.Friday; break;
-                                        case "Saturday": skipDays |= WeekDays.Saturday; break;
-                                        case "Sunday": skipDays |= WeekDays.Sunday; break;
-                                    }
+                                    case "Monday": skipDays |= WeekDays.Monday; break;
+                                    case "Tuesday": skipDays |= WeekDays.Tuesday; break;
+                                    case "Wednesday": skipDays |= WeekDays.Wednesday; break;
+                                    case "Thursday": skipDays |= WeekDays.Thursday; break;
+                                    case "Friday": skipDays |= WeekDays.Friday; break;
+                                    case "Saturday": skipDays |= WeekDays.Saturday; break;
+                                    case "Sunday": skipDays |= WeekDays.Sunday; break;
                                 }
                             }
-                            feed.SkipDays = skipDays;
-                            await reader.SkipAsync();
                         }
+                        feed.SkipDays = skipDays;
+                        await reader.SkipAsync();
                         break;
 
                     case "item": //Feed item start, add new feed item to feed.
@@ -251,8 +248,11 @@ namespace Awesome.FeedParser.Parsers
                     #endregion Optional
 
                     default: //Unknown feed/item node, continue to next.
-                        result = false;
-                        break;
+                        {
+                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
+                            result = false;
+                            break;
+                        }
                 }
             }
             else if (reader.NodeType == XmlNodeType.EndElement)

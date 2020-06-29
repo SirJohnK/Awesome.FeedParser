@@ -5,6 +5,9 @@ using System.Globalization;
 
 namespace Awesome.FeedParser.Models
 {
+    /// <summary>
+    /// ITunes Parser Feed Result Class.
+    /// </summary>
     public class ITunesFeed : ICommonITunes
     {
         /// <summary>
@@ -27,7 +30,7 @@ namespace Awesome.FeedParser.Models
         public Dictionary<string, IEnumerable<string>>? Category { get; internal set; }
 
         /// <summary>
-        /// The podcast parental advisory information. Explicit language or adult content (True/False),
+        /// The podcast parental advisory information. Explicit language or adult content. (True/False)
         /// </summary>
         public bool? Explicit { get; internal set; }
 
@@ -40,7 +43,11 @@ namespace Awesome.FeedParser.Models
 
         FeedImage? ICommonITunes.Image { get => Image; set => Image = value; }
 
+        /// <summary>
+        /// List of words or phrases used when searching.
+        /// </summary>
         public IEnumerable<string>? Keywords { get; internal set; }
+
         IEnumerable<string>? ICommonITunes.Keywords { get => Keywords; set => Keywords = value; }
 
         /// <summary>
@@ -60,10 +67,18 @@ namespace Awesome.FeedParser.Models
 
         string? ICommonITunes.Title { get => Title; set => Title = value; }
 
+        /// <summary>
+        /// Used as the title of the podcast.
+        /// </summary>
         public string? Subtitle { get; internal set; }
+
         string? ICommonITunes.Subtitle { get => Subtitle; set => Subtitle = value; }
 
+        /// <summary>
+        /// Description of the podcast.
+        /// </summary>
         public string? Summary { get; internal set; }
+
         string? ICommonITunes.Summary { get => Summary; set => Summary = value; }
 
         /// <summary>
@@ -71,6 +86,9 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public ITunesType Type { get; internal set; } = ITunesType.Episodic;
 
+        /// <summary>
+        /// Podcast country of origin ISO 3166 code.
+        /// </summary>
         public RegionInfo? CountryOfOrigin { get; internal set; }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Awesome.FeedParser.Exceptions;
+using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
 using Awesome.FeedParser.Parsers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -12,6 +14,9 @@ using System.Xml;
 
 namespace Awesome.FeedParser
 {
+    /// <summary>
+    /// The main feed parser class.
+    /// </summary>
     public static class FeedParser
     {
         /// <summary>
@@ -30,8 +35,8 @@ namespace Awesome.FeedParser
         /// <summary>
         /// Parse root node to determine feed type and feed parser.
         /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="feed"></param>
+        /// <param name="reader">Current xml feed reader.</param>
+        /// <param name="feed">Current feed result.</param>
         /// <returns>Specific Feed type parser.</returns>
         private static Lazy<IParser>? ParseFeedType(XmlReader reader, Feed feed)
         {
@@ -120,6 +125,13 @@ namespace Awesome.FeedParser
                         else if (parseNode = parsers.TryGetValue(reader.NamespaceURI, out var parser))
                             //Parse node with current Namespace parser
                             parseNode = await parser.Value.Parse(reader, feed);
+                        else
+                        {
+                            //Unknown Namespace
+                            var error = reader.ParseError("FeedParser", ParseErrorType.UnknownNamespace, feed.CurrentParseType);
+                            (feed.ParseError ??= new List<ParseError>()).Add(error);
+                            Debug.WriteLine(error);
+                        }
 
                         //Read next node if ignored node or wrong nodetype
                         if (!parseNode) parseNode = await reader.ReadAsync();
