@@ -178,6 +178,8 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         IEnumerable<IAtomEntry> IAtomFeed.Entries => Items.Cast<IAtomEntry>();
 
+        #region Extended Namespaces
+
         /// <summary>
         /// Flag indicatig if feed has iTunes information.
         /// </summary>
@@ -187,6 +189,18 @@ namespace Awesome.FeedParser.Models
         /// The iTunes specific feed information.
         /// </summary>
         public ITunesFeed? ITunes { get; internal set; }
+
+        /// <summary>
+        /// Flag indicatig if feed has Spotify information.
+        /// </summary>
+        public bool HasSpotify => Spotify != null;
+
+        /// <summary>
+        /// The Spotify specific feed information.
+        /// </summary>
+        public SpotifyFeed? Spotify { get; internal set; }
+
+        #endregion Extended Namespaces
 
         #region internal
 
