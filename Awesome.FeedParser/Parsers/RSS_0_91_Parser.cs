@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Parsers
 {
-    public sealed class RSS_0_91_Parser : IParser
+    internal sealed class RSS_0_91_Parser : BaseParser
     {
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_0_91_Parser());
 
@@ -14,7 +14,7 @@ namespace Awesome.FeedParser.Parsers
         {
         }
 
-        public Task<bool> Parse(XmlReader reader, Feed feed)
+        public override Task<bool> Parse(XmlReader reader, Feed feed)
         {
             return Task.FromResult(false);
         }

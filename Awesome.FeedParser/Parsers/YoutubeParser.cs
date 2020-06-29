@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Parsers
 {
-    public sealed class YoutubeParser : IParser
+    internal sealed class YoutubeParser : BaseParser
     {
         public static string Namespace { get; } = @"http://www.youtube.com/xml/schemas/2015";
 
@@ -16,7 +16,7 @@ namespace Awesome.FeedParser.Parsers
         {
         }
 
-        public Task<bool> Parse(XmlReader reader, Feed feed)
+        public override Task<bool> Parse(XmlReader reader, Feed feed)
         {
             return Task.FromResult(false);
         }

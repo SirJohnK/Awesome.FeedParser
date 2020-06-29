@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Parsers
 {
-    public sealed class ContentParser : IParser
+    internal sealed class ContentParser : BaseParser
     {
         public static string Namespace { get; } = @"http://purl.org/rss/1.0/modules/content/";
 
@@ -16,7 +16,7 @@ namespace Awesome.FeedParser.Parsers
         {
         }
 
-        public Task<bool> Parse(XmlReader reader, Feed feed)
+        public override Task<bool> Parse(XmlReader reader, Feed feed)
         {
             return Task.FromResult(false);
         }

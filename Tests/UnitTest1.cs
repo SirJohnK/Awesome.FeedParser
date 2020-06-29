@@ -1,6 +1,8 @@
 using Awesome.FeedParser;
+using Awesome.FeedParser.Models;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +25,14 @@ namespace Tests
         public async Task TestMethod2()
         {
             //Init
-            var feed = await FeedParser.ParseFeedAsync(@"https://feed.khz.se/nordigt", CancellationToken.None);
+            Feed feed;
+            var filename = "nordigt.xml";
+
+            //Open feed file
+            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
+            {
+                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
+            }
 
             //Assert
             feed.Should().NotBeNull();

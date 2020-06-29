@@ -6,6 +6,7 @@ namespace Awesome.FeedParser.Interfaces
 {
     internal interface ICommonFeed
     {
+        internal FeedContentType ContentType { get; set; }
         internal string? Title { get; set; }
         internal string? Description { get; set; }
         internal Uri? Link { get; set; }

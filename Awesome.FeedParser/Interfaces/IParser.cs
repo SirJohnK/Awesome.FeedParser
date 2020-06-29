@@ -4,8 +4,8 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Interfaces
 {
-    public interface IParser
+    internal interface IParser
     {
-        public Task<bool> Parse(XmlReader reader, Feed feed);
+        Task<bool> Parse(XmlReader reader, Feed feed);
     }
 }
