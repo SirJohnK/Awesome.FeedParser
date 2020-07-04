@@ -48,6 +48,8 @@ namespace Awesome.FeedParser.Extensions
             return new NodeInformation()
             {
                 Name = reader.Name,
+                Prefix = reader.Prefix,
+                LocalName = reader.LocalName,
                 Type = reader.NodeType,
                 Value = reader.Value,
                 Namespace = reader.NamespaceURI,

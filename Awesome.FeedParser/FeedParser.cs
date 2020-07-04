@@ -24,6 +24,8 @@ namespace Awesome.FeedParser
         /// </summary>
         private static Dictionary<string, Lazy<IParser>> parsers = new Dictionary<string, Lazy<IParser>>()
         {
+            { RdfParser.Namespace, RdfParser.Instance },
+            { RSS_1_0_Parser.Namepace, RSS_1_0_Parser.Instance },
             { AtomParser.Namespace, AtomParser.Instance },
             { ContentParser.Namespace, ContentParser.Instance },
             { ITunesParser.Namespace, ITunesParser.Instance },
@@ -100,8 +102,8 @@ namespace Awesome.FeedParser
             //Init
             bool parseNode;
             var feed = new Feed();
-            var defaultParser = RSS_0_91_Parser.Instance;
-            var settings = new XmlReaderSettings() { CloseInput = true, ConformanceLevel = ConformanceLevel.Document, IgnoreWhitespace = true, IgnoreComments = true, Async = true };
+            var defaultParser = RSS_2_0_Parser.Instance;
+            var settings = new XmlReaderSettings() { CloseInput = true, ConformanceLevel = ConformanceLevel.Document, IgnoreWhitespace = true, IgnoreComments = true, Async = true, DtdProcessing = DtdProcessing.Ignore };
             using var reader = XmlReader.Create(stream, settings);
 
             try
@@ -109,6 +111,9 @@ namespace Awesome.FeedParser
                 //Start Reading and move to root node
                 if (parseNode = await reader.MoveToContentAsync() != XmlNodeType.None)
                 {
+                    //Save Parent Node
+                    var parent = new Stack<NodeInformation>(new List<NodeInformation>() { reader.NodeInformation() });
+
                     //Attempt to identify feed type
                     defaultParser = ParseFeedType(reader, feed) ?? defaultParser;
 
@@ -121,10 +126,10 @@ namespace Awesome.FeedParser
                         //Feed node or Extended Namespace node?
                         if (string.IsNullOrWhiteSpace(reader.NamespaceURI))
                             //Parse node with default feed parser
-                            parseNode = await defaultParser.Value.Parse(reader, feed);
+                            parseNode = await defaultParser.Value.Parse(parent, reader, feed);
                         else if (parseNode = parsers.TryGetValue(reader.NamespaceURI, out var parser))
                             //Parse node with current Namespace parser
-                            parseNode = await parser.Value.Parse(reader, feed);
+                            parseNode = await parser.Value.Parse(parent, reader, feed);
                         else
                         {
                             //Unknown Namespace
@@ -134,7 +139,18 @@ namespace Awesome.FeedParser
                         }
 
                         //Read next node if ignored node or wrong nodetype
-                        if (!parseNode) parseNode = await reader.ReadAsync();
+                        if (!parseNode)
+                        {
+                            //Save Parent Node
+                            if (reader.NodeType != XmlNodeType.EndElement && reader.Depth > (parent.Count > 0 ? parent.Peek().Depth : -1))
+                                parent.Push(reader.NodeInformation());
+
+                            //Read next node
+                            parseNode = await reader.ReadAsync();
+
+                            //Verify Parent
+                            while (parent.Count > 0 && reader.Depth <= parent.Peek().Depth) parent.Pop();
+                        }
                     }
                 }
             }

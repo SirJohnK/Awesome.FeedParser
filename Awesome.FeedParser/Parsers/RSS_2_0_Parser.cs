@@ -13,15 +13,15 @@ namespace Awesome.FeedParser.Parsers
     /// <summary>
     /// Parser for RSS 2.0 feed nodes.
     /// </summary>
-    internal sealed class RSS_2_0_Parser : BaseParser
+    internal class RSS_2_0_Parser : RSS_1_0_Parser
     {
-        public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_2_0_Parser());
+        public new static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_2_0_Parser());
 
-        private RSS_2_0_Parser()
+        protected RSS_2_0_Parser()
         {
         }
 
-        public override async Task<bool> Parse(XmlReader reader, Feed feed)
+        public override async Task<bool> Parse(Stack<NodeInformation> parent, XmlReader reader, Feed feed, bool root = true)
         {
             //Init
             bool result;

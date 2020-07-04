@@ -6,10 +6,11 @@ namespace Awesome.FeedParser.Models
     public enum FeedContentType
     {
         Basic = 0,
-        Content = 1,
-        ITunes = 2,
-        MediaRSS = 4,
-        Spotify = 8,
-        Youtube = 16,
+        Rdf = 1,
+        Content = 2,
+        ITunes = 4,
+        MediaRSS = 8,
+        Spotify = 16,
+        Youtube = 32,
     }
 }

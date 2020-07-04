@@ -30,10 +30,12 @@ namespace Awesome.FeedParser.Parsers
         /// <summary>
         /// Main iTunes parsing method.
         /// </summary>
+        /// <param name="parent">Parent stack for current node.</param>
         /// <param name="reader">Current xml feed reader.</param>
         /// <param name="feed">Current feed result.</param>
-        /// <returns></returns>
-        public override async Task<bool> Parse(XmlReader reader, Feed feed)
+        /// <param name="root">Flag indicating if parser is the default root parser.</param>
+        /// <returns>Flag indicating if current node should be parsed or if next node should be retrieved.</returns>
+        public override async Task<bool> Parse(Stack<NodeInformation> parent, XmlReader reader, Feed feed, bool root = true)
         {
             //Init
             bool result;

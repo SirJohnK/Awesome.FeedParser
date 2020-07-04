@@ -1,6 +1,7 @@
 ﻿using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -16,7 +17,7 @@ namespace Awesome.FeedParser.Parsers
         {
         }
 
-        public override Task<bool> Parse(XmlReader reader, Feed feed)
+        public override Task<bool> Parse(Stack<NodeInformation> parent, XmlReader reader, Feed feed, bool root = true)
         {
             return Task.FromResult(false);
         }
