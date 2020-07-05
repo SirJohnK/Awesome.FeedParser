@@ -1,10 +1,10 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -52,7 +52,8 @@ namespace Awesome.FeedParser.Parsers
 
                     case "channel": //Feed root node. (Ignored)
                         {
-                            result = false;
+                            //Advance to next node
+                            reader.ReadStartElement();
                             break;
                         }
 
@@ -246,7 +247,7 @@ namespace Awesome.FeedParser.Parsers
                             try
                             {
                                 //Attempt to parse managing editor
-                                feed.ManagingEditor = new MailAddress(content);
+                                feed.ManagingEditor = content.ToMailAddress();
                             }
                             catch (Exception ex) when (ex is ArgumentException || ex is ArgumentNullException || ex is FormatException)
                             {
@@ -358,7 +359,7 @@ namespace Awesome.FeedParser.Parsers
                             try
                             {
                                 //Attempt to parse web master
-                                feed.WebMaster = new MailAddress(content);
+                                feed.WebMaster = content.ToMailAddress();
                             }
                             catch (Exception ex) when (ex is ArgumentException || ex is ArgumentNullException || ex is FormatException)
                             {
@@ -370,8 +371,11 @@ namespace Awesome.FeedParser.Parsers
 
                     case "item": //Feed item start, add new feed item to feed.
                         {
+                            //Add new item
                             if (feed.CurrentParseType == ParseType.Feed) feed.AddItem();
-                            result = false;
+
+                            //Advance to next node
+                            reader.ReadStartElement();
                             break;
                         }
 
@@ -379,13 +383,10 @@ namespace Awesome.FeedParser.Parsers
 
                     #endregion Optional
 
-                    default: //Unknown feed/item node, if main root parser, continue to next.
+                    default: //Unknown feed/item node, if main root parser, log unknown node and continue to next.
                         {
-                            if (root)
-                            {
-                                SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
-                                result = false;
-                            }
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
+                            result = false;
                             break;
                         }
                 }

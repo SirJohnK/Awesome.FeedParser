@@ -72,6 +72,7 @@ namespace Awesome.FeedParser.Parsers
                                 Protocol = reader.GetAttribute("protocol"),
                                 RegisterProcedure = reader.GetAttribute("registerProcedure")
                             };
+                            result = false;
                             break;
                         }
 
