@@ -21,10 +21,10 @@ namespace Awesome.FeedParser.Extensions
             }
         }
 
-        public static async Task<Dictionary<string, string>> AllSubTreeElements(this XmlReader reader)
+        public static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
         {
             var rootName = reader.Name;
-            var elements = new Dictionary<string, string>();
+            var elements = new List<KeyValuePair<string, string>>();
             var subTree = reader.ReadSubtree();
             foreach (var element in subTree.AllElements())
             {
@@ -32,7 +32,7 @@ namespace Awesome.FeedParser.Extensions
                 {
                     var localName = subTree.LocalName;
                     subTree.ReadStartElement(element);
-                    elements.Add(localName, await subTree.ReadContentAsStringAsync());
+                    elements.Add(new KeyValuePair<string, string>(localName, await subTree.ReadContentAsStringAsync()));
                 }
             }
             subTree.Close();

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Awesome.FeedParser.Extensions;
+using Awesome.FeedParser.Models;
+using System;
 using System.Xml;
 
 namespace Awesome.FeedParser.Exceptions
@@ -8,20 +10,22 @@ namespace Awesome.FeedParser.Exceptions
     /// </summary>
     public class FeedParseException : Exception
     {
+        /// <summary>
+        /// Main feed parser exception.
+        /// </summary>
+        /// <param name="source">Feed source.</param>
+        /// <param name="reader">Xml reader for curret feed.</param>
+        /// <param name="innerexception">Catched feed parser exception.</param>
         public FeedParseException(string source, XmlReader reader, Exception innerexception) : base(innerexception.Message, innerexception)
         {
             //Init
             Source = source;
-            var lineInfo = (IXmlLineInfo)reader;
-            if (lineInfo.HasLineInfo())
-            {
-                Line = lineInfo.LineNumber;
-                Position = lineInfo.LinePosition;
-            }
+            Node = reader.NodeInformation();
         }
 
-        public int Line { get; }
-
-        public int Position { get; }
+        /// <summary>
+        /// Current node information.
+        /// </summary>
+        public NodeInformation Node { get; }
     }
 }

@@ -16,10 +16,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>sirjohnk.png</PackageIcon>
-    <PackageTags>dotnet,dotnet-standard</PackageTags>
+    <PackageTags>dotnet,dotnet-standard,parser,feed-reader,feedparser,rss,rss-reader,rss-feed-parser</PackageTags>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE" Pack="True" PackagePath="" />
