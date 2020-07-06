@@ -85,7 +85,6 @@ namespace Awesome.FeedParser.Parsers
                                             }
                                         }
                                         feed.ItemsSequence = itemsSequence;
-                                        result = false;
                                         break;
                                     }
 
@@ -98,8 +97,8 @@ namespace Awesome.FeedParser.Parsers
 
                     default: //Unknown feed/item node, continue to next.
                         {
-                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             result = false;
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }

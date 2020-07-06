@@ -1,10 +1,10 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -70,13 +70,13 @@ namespace Awesome.FeedParser.Parsers
 
                     case "author": //The group responsible for creating the show/episode.
                         {
-                            target.Author = await reader.ReadElementContentAsStringAsync();
+                            target.Author = await reader.ReadStartElementAndContentAsStringAsync();
                         }
                         break;
 
                     case "block": //The podcast/episode show or hide status. (true/false/yes/no)
                         {
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
                             if (bool.TryParse(content, out var blockFlag))
                                 target.Block = blockFlag;
                             else
@@ -86,7 +86,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "explicit": //The podcast/episode parental advisory information. Explicit language or adult content. (true/false/yes/no)
                         {
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
                             if (bool.TryParse(content, out var explicitFlag))
                                 target.Explicit = explicitFlag;
                             else
@@ -98,32 +98,31 @@ namespace Awesome.FeedParser.Parsers
                         {
                             var href = reader.GetAttribute("href");
                             if (href != null) target.Image = new FeedImage() { Url = new Uri(href) };
-                            result = false;
                             break;
                         }
 
                     case "keywords": //List of words or phrases used when searching.
                         {
-                            var words = await reader.ReadElementContentAsStringAsync();
+                            var words = await reader.ReadStartElementAndContentAsStringAsync();
                             target.Keywords = words.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(word => word.Trim());
                             break;
                         }
 
                     case "title": //The show/episode title specific for Apple Podcasts.
                         {
-                            target.Title = await reader.ReadElementContentAsStringAsync();
+                            target.Title = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
                     case "subtitle": //Used as the title of the podcast/episode.
                         {
-                            target.Subtitle = await reader.ReadElementContentAsStringAsync();
+                            target.Subtitle = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
                     case "summary": //Description of the podcast/episode.
                         {
-                            target.Summary = await reader.ReadElementContentAsStringAsync();
+                            target.Summary = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
@@ -135,7 +134,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.ITunes != null)
                             {
-                                var type = await reader.ReadElementContentAsStringAsync();
+                                var type = await reader.ReadStartElementAndContentAsStringAsync();
                                 switch (type)
                                 {
                                     case "episodic": feed.ITunes.Type = ITunesType.Episodic; break;
@@ -144,7 +143,8 @@ namespace Awesome.FeedParser.Parsers
                                 }
                             }
                             else
-                                result = false;
+                                //Feed ITunes object missing
+                                throw new ArgumentNullException("Feed.ITunes");
                             break;
                         }
 
@@ -172,7 +172,9 @@ namespace Awesome.FeedParser.Parsers
                                     }
                                 }
                             }
-                            result = false;
+                            else
+                                //Feed ITunes object missing
+                                throw new ArgumentNullException("Feed.ITunes");
                             break;
                         }
 
@@ -188,24 +190,25 @@ namespace Awesome.FeedParser.Parsers
                                     switch (element.Key)
                                     {
                                         case "name": owner.Name = element.Value; break;
-                                        case "email": owner.Email = new MailAddress(element.Value); break;
-                                        default: SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value); break;
+                                        case "email": owner.Email = element.Value.ToMailAddress(); break;
+                                        default: SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key); break;
                                     }
                                 }
                                 feed.ITunes.Owner = owner;
-                                await reader.SkipAsync();
                             }
                             else
-                                result = false;
+                                //Feed ITunes object missing
+                                throw new ArgumentNullException("Feed.ITunes");
                             break;
                         }
 
                     case "new-feed-url": //The new podcast RSS Feed URL.
                         {
                             if (feed.ITunes != null)
-                                feed.ITunes.NewFeedUrl = new Uri(await reader.ReadElementContentAsStringAsync());
+                                feed.ITunes.NewFeedUrl = new Uri(await reader.ReadStartElementAndContentAsStringAsync());
                             else
-                                result = false;
+                                //Feed ITunes object missing
+                                throw new ArgumentNullException("Feed.ITunes");
                             break;
                         }
 
@@ -217,7 +220,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 if (double.TryParse(content, out var seconds))
                                     //If numeric, assume seconds
                                     feed.CurrentItem.ITunes.Duration = TimeSpan.FromSeconds(seconds);
@@ -229,7 +232,8 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content);
                             }
                             else
-                                result = false;
+                                //Feed CurrentItem ITunes object missing
+                                throw new ArgumentNullException("Feed.CurrentItem.ITunes");
                             break;
                         }
 
@@ -237,7 +241,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 switch (content)
                                 {
                                     case "full": feed.CurrentItem.ITunes.EpisodeType = ITunesEpisodeType.Full; break;
@@ -247,7 +251,8 @@ namespace Awesome.FeedParser.Parsers
                                 }
                             }
                             else
-                                result = false;
+                                //Feed CurrentItem ITunes object missing
+                                throw new ArgumentNullException("Feed.CurrentItem.ITunes");
                             break;
                         }
 
@@ -255,7 +260,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 if (int.TryParse(content, out var episode))
                                     feed.CurrentItem.ITunes.Episode = episode;
                                 else
@@ -263,7 +268,8 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content);
                             }
                             else
-                                result = false;
+                                //Feed CurrentItem ITunes object missing
+                                throw new ArgumentNullException("Feed.CurrentItem.ITunes");
                             break;
                         }
 
@@ -271,7 +277,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 if (int.TryParse(content, out var season))
                                     feed.CurrentItem.ITunes.Season = season;
                                 else
@@ -279,7 +285,8 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content);
                             }
                             else
-                                result = false;
+                                //Feed CurrentItem ITunes object missing
+                                throw new ArgumentNullException("Feed.CurrentItem.ITunes");
                             break;
                         }
 
@@ -287,8 +294,8 @@ namespace Awesome.FeedParser.Parsers
 
                     default: //Unknown feed/item node, continue to next.
                         {
-                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             result = false;
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }

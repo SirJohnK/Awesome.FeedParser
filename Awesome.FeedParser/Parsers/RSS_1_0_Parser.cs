@@ -75,7 +75,6 @@ namespace Awesome.FeedParser.Parsers
                                 //Missing about attribute
                                 SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "rdf:about");
                             }
-                            result = false;
                             break;
                         }
 
@@ -108,7 +107,6 @@ namespace Awesome.FeedParser.Parsers
                                 //Missing about attribute
                                 SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "rdf:about");
                             }
-                            result = false;
                             break;
                         }
 
@@ -123,9 +121,7 @@ namespace Awesome.FeedParser.Parsers
                     case "image": //Specifies a GIF, JPEG or PNG image that can be displayed with the feed. (Override RSS 0.91)
                         {
                             //Verify Correct Image Node. If empty, ignore. Otherwise parse.
-                            if (reader.IsEmptyElement)
-                                result = false;
-                            else
+                            if (!reader.IsEmptyElement)
                             {
                                 //Init
                                 var image = feed.Image ?? new FeedImage();
@@ -210,29 +206,22 @@ namespace Awesome.FeedParser.Parsers
                                         default:
                                             {
                                                 //Unknown node
-                                                SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                                SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
                                                 break;
                                             }
                                     }
                                 }
                                 feed.Image = image;
-                                await reader.SkipAsync();
                             }
                             break;
                         }
 
-                    case "items": //An RDF Sequence is used to contain all the items to denote item order for rendering and reconstruction.
-                        {
-                            result = false;
-                            break;
-                        }
+                    case "items": break; //An RDF Sequence is used to contain all the items to denote item order for rendering and reconstruction. (Ignore)
 
                     case "textinput": //Specifies a text input box that can be displayed with the feed. (Override RSS 0.91)
                         {
                             //Verify Correct text input Node. If empty, ignore. Otherwise parse.
-                            if (reader.IsEmptyElement)
-                                result = false;
-                            else
+                            if (!reader.IsEmptyElement)
                             {
                                 //Init
                                 var textInput = feed.TextInput ?? new FeedTextInput();
@@ -281,11 +270,10 @@ namespace Awesome.FeedParser.Parsers
                                             }
                                         case "name": textInput.Name = element.Value; break;
                                         case "title": textInput.Title = element.Value; break;
-                                        default: SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}"); break;
+                                        default: SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key); break;
                                     }
                                 }
                                 feed.TextInput = textInput;
-                                await reader.SkipAsync();
                             }
                             break;
                         }
@@ -298,8 +286,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Try RSS 0.92 Parse
                             result = await base.Parse(parent, reader, feed, false);
-                            if (!result && root)
-                                SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
+                            if (!result && root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }

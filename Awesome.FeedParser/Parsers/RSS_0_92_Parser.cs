@@ -52,8 +52,9 @@ namespace Awesome.FeedParser.Parsers
 
                     case "category": //One or more categories that the feed/item belongs to.
                         {
+                            //Parse and add category to feed catergories list
                             var categories = target.Categories ?? new List<FeedCategory>();
-                            categories.Add(new FeedCategory() { Domain = reader.GetAttribute("domain"), Category = await reader.ReadElementContentAsStringAsync() });
+                            categories.Add(new FeedCategory() { Domain = reader.GetAttribute("domain"), Category = await reader.ReadStartElementAndContentAsStringAsync() });
                             target.Categories = categories;
                             break;
                         }
@@ -64,6 +65,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "cloud": //Allows processes to register with a cloud to be notified of updates to the feed, implementing a lightweight publish-subscribe protocol for RSS feeds.
                         {
+                            //Parse Cloud attributes
                             feed.Cloud = new FeedCloud()
                             {
                                 Domain = reader.GetAttribute("domain"),
@@ -72,7 +74,6 @@ namespace Awesome.FeedParser.Parsers
                                 Protocol = reader.GetAttribute("protocol"),
                                 RegisterProcedure = reader.GetAttribute("registerProcedure")
                             };
-                            result = false;
                             break;
                         }
 
@@ -103,8 +104,10 @@ namespace Awesome.FeedParser.Parsers
                                     //Unknown node format
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, $"Node: url, {ex.Message}");
                                 }
-                                result = false;
                             }
+                            else
+                                //Feed item object missing
+                                throw new ArgumentNullException("Feed.CurrentItem");
                             break;
                         }
 
@@ -116,7 +119,7 @@ namespace Awesome.FeedParser.Parsers
                                 var content = reader.GetAttribute("url");
 
                                 //Attempt to parse source
-                                feed.CurrentItem.Source = new FeedLink() { Text = await reader.ReadElementContentAsStringAsync() };
+                                feed.CurrentItem.Source = new FeedLink() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
 
                                 try
                                 {
@@ -129,6 +132,9 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, $"Node: url, {ex.Message}");
                                 }
                             }
+                            else
+                                //Feed item object missing
+                                throw new ArgumentNullException("Feed.CurrentItem");
                             break;
                         }
 
@@ -140,8 +146,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Try RSS 0.91 Parse
                             result = await base.Parse(parent, reader, feed, false);
-                            if (!result && root)
-                                SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
+                            if (!result && root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }

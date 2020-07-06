@@ -75,7 +75,9 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "recentCount");
                                 }
                             }
-                            result = false;
+                            else
+                                //Feed Spotify object missing
+                                throw new ArgumentNullException("Feed.Spotify");
                         }
                         break;
 
@@ -84,7 +86,7 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.Spotify != null)
                             {
                                 //Get Countries of origin
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 try
                                 {
                                     //Attempt to set country of origin list
@@ -97,7 +99,8 @@ namespace Awesome.FeedParser.Parsers
                                 }
                             }
                             else
-                                result = false;
+                                //Feed Spotify object missing
+                                throw new ArgumentNullException("Feed.Spotify");
                             break;
                         }
 
@@ -105,8 +108,8 @@ namespace Awesome.FeedParser.Parsers
 
                     default: //Unknown feed/item node, continue to next.
                         {
-                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             result = false;
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }

@@ -50,23 +50,18 @@ namespace Awesome.FeedParser.Parsers
                 {
                     #region Required
 
-                    case "channel": //Feed root node. (Ignored)
-                        {
-                            //Advance to next node
-                            reader.ReadStartElement();
-                            break;
-                        }
+                    case "channel": break; //Feed root node. (Ignored)
 
                     case "description": //Phrase or sentence describing the feed/item.
                         {
-                            target.Description = await reader.ReadElementContentAsStringAsync();
+                            target.Description = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
                     case "language": //The language the feed is written in. (ISO 639)
                         {
                             //Get feed language
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             try
                             {
@@ -84,7 +79,7 @@ namespace Awesome.FeedParser.Parsers
                     case "link": //The URL to the HTML website corresponding to the feed/item.
                         {
                             //Get link
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             try
                             {
@@ -101,7 +96,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "title": //The name of the feed/item.
                         {
-                            target.Title = await reader.ReadElementContentAsStringAsync();
+                            target.Title = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
@@ -114,7 +109,7 @@ namespace Awesome.FeedParser.Parsers
                     case "pubDate": //The publication date for the content in the feed/item.
                         {
                             //Get publication date
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             //Attemp to parser publication date
                             if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var pubDate))
@@ -131,14 +126,14 @@ namespace Awesome.FeedParser.Parsers
 
                     case "copyright": //Copyright notice for content in the feed.
                         {
-                            feed.Copyright = await reader.ReadElementContentAsStringAsync();
+                            feed.Copyright = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
                     case "docs": //A URL that points to the documentation for the format used in the RSS file.
                         {
                             //Get docs
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             try
                             {
@@ -215,20 +210,19 @@ namespace Awesome.FeedParser.Parsers
                                     default:
                                         {
                                             //Unknown node
-                                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                            SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
                                             break;
                                         }
                                 }
                             }
                             feed.Image = image;
-                            await reader.SkipAsync();
                             break;
                         }
 
                     case "lastBuildDate": //The last time the content of the feed changed.
                         {
                             //Init
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             //Attempt to parse last build date
                             if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var lastBuildDate))
@@ -242,7 +236,7 @@ namespace Awesome.FeedParser.Parsers
                     case "managingEditor": //Email address for person responsible for editorial content.
                         {
                             //Init
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             try
                             {
@@ -259,7 +253,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "rating": //Protocol for Web Description Resources (POWDER)
                         {
-                            feed.Rating = await reader.ReadElementContentAsStringAsync();
+                            feed.Rating = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
@@ -287,11 +281,10 @@ namespace Awesome.FeedParser.Parsers
                                 else
                                 {
                                     //Unknown node
-                                    SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                    SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
                                 }
                             }
                             feed.SkipDays = skipDays;
-                            await reader.SkipAsync();
                             break;
                         }
 
@@ -310,10 +303,9 @@ namespace Awesome.FeedParser.Parsers
                                         SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}");
                                 else
                                     //Unknown node
-                                    SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                    SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
                             }
                             feed.SkipHours = skipHours;
-                            await reader.SkipAsync();
                             break;
                         }
 
@@ -343,18 +335,17 @@ namespace Awesome.FeedParser.Parsers
                                         }
                                     case "name": textInput.Name = element.Value; break;
                                     case "title": textInput.Title = element.Value; break;
-                                    default: SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed, element.Value, $"Node: {element.Key}"); break;
+                                    default: SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key); break;
                                 }
                             }
                             feed.TextInput = textInput;
-                            await reader.SkipAsync();
                             break;
                         }
 
                     case "webMaster": //Email address for person responsible for technical issues relating to the feed.
                         {
                             //Init
-                            var content = await reader.ReadElementContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync();
 
                             try
                             {
@@ -373,9 +364,6 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Add new item
                             if (feed.CurrentParseType == ParseType.Feed) feed.AddItem();
-
-                            //Advance to next node
-                            reader.ReadStartElement();
                             break;
                         }
 
@@ -385,13 +373,13 @@ namespace Awesome.FeedParser.Parsers
 
                     default: //Unknown feed/item node, if main root parser, log unknown node and continue to next.
                         {
-                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             result = false;
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }
             }
-            else if (reader.NodeType == XmlNodeType.EndElement)
+            else if (result = reader.NodeType == XmlNodeType.EndElement)
             {
                 switch (reader.LocalName)
                 {

@@ -89,7 +89,6 @@ namespace Awesome.FeedParser
 
                 default:
                     feed.Type = FeedType.Unknown;
-                    feedTypeParser = RSS_0_91_Parser.Instance;
                     break;
             }
 
@@ -126,10 +125,10 @@ namespace Awesome.FeedParser
                         //Feed node or Extended Namespace node?
                         if (string.IsNullOrWhiteSpace(reader.NamespaceURI))
                             //Parse node with default feed parser
-                            parseNode = await defaultParser.Value.Parse(parent, reader, feed);
+                            await defaultParser.Value.Parse(parent, reader, feed);
                         else if (parseNode = parsers.TryGetValue(reader.NamespaceURI, out var parser))
                             //Parse node with current Namespace parser
-                            parseNode = await parser.Value.Parse(parent, reader, feed);
+                            await parser.Value.Parse(parent, reader, feed);
                         else
                         {
                             //Unknown Namespace
@@ -138,19 +137,15 @@ namespace Awesome.FeedParser
                             Debug.WriteLine(error);
                         }
 
-                        //Read next node if ignored node or wrong nodetype
-                        if (!parseNode)
-                        {
-                            //Save Parent Node
-                            if (reader.NodeType != XmlNodeType.EndElement && reader.Depth > (parent.Count > 0 ? parent.Peek().Depth : -1))
-                                parent.Push(reader.NodeInformation());
+                        //Save Parent Node
+                        if (reader.NodeType != XmlNodeType.EndElement && reader.Depth > (parent.Count > 0 ? parent.Peek().Depth : -1))
+                            parent.Push(reader.NodeInformation());
 
-                            //Read next node
-                            parseNode = await reader.ReadAsync();
+                        //Read next node
+                        parseNode = await reader.ReadAsync();
 
-                            //Verify Parent
-                            while (parent.Count > 0 && reader.Depth <= parent.Peek().Depth) parent.Pop();
-                        }
+                        //Verify Parent
+                        while (parent.Count > 0 && reader.Depth <= parent.Peek().Depth) parent.Pop();
                     }
                 }
             }

@@ -39,6 +39,18 @@ namespace Awesome.FeedParser.Extensions
             return elements;
         }
 
+        /// <summary>
+        /// Combines ReadStartElement and ReadContentAsStringAsync XmlReader methods.
+        /// </summary>
+        /// <param name="reader">Current XmlReader.</param>
+        /// <returns></returns>
+        public static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
+        {
+            //Read Start Element
+            if (reader.NodeType == XmlNodeType.Element) reader.ReadStartElement();
+            return reader.ReadContentAsStringAsync();
+        }
+
         public static NodeInformation NodeInformation(this XmlReader reader)
         {
             //Init
