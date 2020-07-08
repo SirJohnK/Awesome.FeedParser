@@ -97,7 +97,24 @@ namespace Awesome.FeedParser.Parsers
                     case "image": //The artwork for the show/episode.
                         {
                             var href = reader.GetAttribute("href");
-                            if (href != null) target.Image = new FeedImage() { Url = new Uri(href) };
+                            if (href != null)
+                            {
+                                try
+                                {
+                                    //Attempt to parse image URL
+                                    target.Image = new FeedImage() { Url = new Uri(href) };
+                                }
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, href, ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                //Missing href attribute
+                                SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "href");
+                            }
                             break;
                         }
 
@@ -167,9 +184,23 @@ namespace Awesome.FeedParser.Parsers
                                         while (subTree.ReadToFollowing("category", reader.NamespaceURI))
                                         {
                                             var subCategory = subTree.GetAttribute("text");
-                                            if (!category.Equals(subCategory)) subCategories.Add(HttpUtility.HtmlDecode(subCategory));
+                                            if (subCategory != null)
+                                            {
+                                                if (!category.Equals(subCategory))
+                                                    subCategories.Add(HttpUtility.HtmlDecode(subCategory));
+                                            }
+                                            else
+                                            {
+                                                //Missing text attribute
+                                                SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "text");
+                                            }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    //Missing text attribute
+                                    SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "text");
                                 }
                             }
                             else
@@ -190,7 +221,20 @@ namespace Awesome.FeedParser.Parsers
                                     switch (element.Key)
                                     {
                                         case "name": owner.Name = element.Value; break;
-                                        case "email": owner.Email = element.Value.ToMailAddress(); break;
+                                        case "email":
+                                            {
+                                                try
+                                                {
+                                                    //Attempt to parse owner email
+                                                    owner.Email = element.Value.ToMailAddress();
+                                                }
+                                                catch (Exception ex) when (ex is ArgumentException || ex is ArgumentNullException || ex is FormatException)
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}, {ex.Message}");
+                                                }
+                                                break;
+                                            }
                                         default: SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key); break;
                                     }
                                 }
@@ -205,7 +249,21 @@ namespace Awesome.FeedParser.Parsers
                     case "new-feed-url": //The new podcast RSS Feed URL.
                         {
                             if (feed.ITunes != null)
-                                feed.ITunes.NewFeedUrl = new Uri(await reader.ReadStartElementAndContentAsStringAsync());
+                            {
+                                //Get docs
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+
+                                try
+                                {
+                                    //Attempt to parse new feed URL
+                                    feed.ITunes.NewFeedUrl = new Uri(content);
+                                }
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, ex.Message);
+                                }
+                            }
                             else
                                 //Feed ITunes object missing
                                 throw new ArgumentNullException("Feed.ITunes");
