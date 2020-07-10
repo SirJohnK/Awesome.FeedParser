@@ -1,5 +1,5 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using Awesome.FeedParser.Utils;
+using System;
 
 namespace Awesome.FeedParser.Models
 {
@@ -32,11 +32,26 @@ namespace Awesome.FeedParser.Models
         private string ParseTypeName => Enum.GetName(typeof(ParseType), ParseType);
 
         //Split Parse Error Type Camel Case and return result
-        private string ParseErrorTypeName => string.Join(" ", Regex.Split(Enum.GetName(typeof(ParseErrorType), ParseErrorType), @"(?<!^)(?=[A-Z])"));
+        private string ParseErrorTypeName => Enum.GetName(typeof(ParseErrorType), ParseErrorType).SplitCamelCase();
 
         public override string ToString()
         {
-            var message = $"({Parser}) {ParseErrorTypeName} ({ParseTypeName}): {Node?.Name}, Line: {Node?.LineNumber}, Pos: {Node?.LinePosition}";
+            //Init
+            var message = $"({Parser}) {ParseErrorTypeName} ({ParseTypeName}): {Node?.Name}";
+
+            //Add type specific information
+            message += ParseErrorType switch
+            {
+                Models.ParseErrorType.MissingAttribute => $", Attribute: {Message}",
+                Models.ParseErrorType.MissingNode => $", Node: {Message}",
+                Models.ParseErrorType.UnknownNamespace => $", Namespace: {Node?.Namespace}",
+                Models.ParseErrorType.UnknownNode => string.Empty,
+                Models.ParseErrorType.UnknownNodeFormat => $", Content: {ParseValue}, Message: {Message}",
+                Models.ParseErrorType.UnknownSubNode => $", Subnode: {Message}, Content: {ParseValue}",
+                _ => string.Empty
+            } + $", Line: {Node?.LineNumber}, Pos: {Node?.LinePosition}";
+
+            //Return error message
             return message;
         }
 

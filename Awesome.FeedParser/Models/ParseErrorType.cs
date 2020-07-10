@@ -3,10 +3,11 @@
     public enum ParseErrorType
     {
         General = 0,
-        UnknownNode = 1,
-        UnknownNodeFormat = 2,
+        MissingAttribute = 1,
+        MissingNode = 2,
         UnknownNamespace = 3,
-        MissingNode = 4,
-        MissingAttribute = 5
+        UnknownNode = 4,
+        UnknownNodeFormat = 5,
+        UnknownSubNode = 6,
     }
 }

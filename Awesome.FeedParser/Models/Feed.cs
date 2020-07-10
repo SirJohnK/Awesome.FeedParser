@@ -12,6 +12,8 @@ namespace Awesome.FeedParser.Models
     /// </summary>
     public class Feed : IRSS_0_91_Feed, IRSS_0_92_Feed, IRSS_1_0_Feed, IRSS_2_0_Feed, IAtomFeed, ICommonFeed
     {
+        #region Feed Parser
+
         /// <summary>
         /// Parsed feed type.
         /// </summary>
@@ -22,74 +24,29 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public FeedContentType ContentType { get; internal set; } = FeedContentType.Basic;
 
+        /// <summary>
+        /// ICommon interface, feed implementation of ContentType.
+        /// </summary>
         FeedContentType ICommonFeed.ContentType { get => ContentType; set => ContentType = value; }
 
+        /// <summary>
+        /// Flag indicating if any parse errors where found while parsing feed.
+        /// </summary>
         public bool HasParseErrors => ParseError != null;
 
+        /// <summary>
+        /// Parse errors found while parsing feed.
+        /// </summary>
         public List<ParseError>? ParseError { get; internal set; }
+
+        #endregion Feed Parser
+
+        #region RSS / Atom
 
         /// <summary>
         /// Url to information about feed. (RSS 1.0 Only)
         /// </summary>
-        public string? About { get; internal set; }
-
-        /// <summary>
-        /// The name of the feed.
-        /// </summary>
-        public string? Title { get; internal set; }
-
-        string? ICommonFeed.Title { get => Title; set => Title = value; }
-
-        /// <summary>
-        /// Phrase or sentence describing the feed.
-        /// </summary>
-        public string? Description { get; internal set; }
-
-        string? ICommonFeed.Description { get => Description; set => Description = value; }
-
-        /// <summary>
-        /// The URL to the HTML website corresponding to the feed.
-        /// </summary>
-        public Uri? Link { get; internal set; }
-
-        Uri? ICommonFeed.Link { get => Link; set => Link = value; }
-
-        /// <summary>
-        /// Specifies a GIF, JPEG or PNG image that can be displayed with the feed.
-        /// </summary>
-        public FeedImage? Image { get; internal set; }
-
-        /// <summary>
-        /// The publication date for the content in the feed.
-        /// </summary>
-        public DateTime? PubDate { get; internal set; }
-
-        DateTime? ICommonFeed.PubDate { get => PubDate; set => PubDate = value; }
-
-        /// <summary>
-        /// The last time the content of the feed changed.
-        /// </summary>
-        public DateTime? LastBuildDate { get; internal set; }
-
-        /// <summary>
-        /// The language the feed is written in. (ISO 639)
-        /// </summary>
-        public CultureInfo? Language { get; internal set; }
-
-        /// <summary>
-        /// Copyright notice for content in the feed.
-        /// </summary>
-        public string? Copyright { get; internal set; }
-
-        /// <summary>
-        /// Email address for person responsible for editorial content.
-        /// </summary>
-        public MailAddress? ManagingEditor { get; internal set; }
-
-        /// <summary>
-        /// Email address for person responsible for technical issues relating to the feed.
-        /// </summary>
-        public MailAddress? WebMaster { get; internal set; }
+        public Uri? About { get; internal set; }
 
         /// <summary>
         /// Internal list of categories for parser access
@@ -101,17 +58,10 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public IReadOnlyList<FeedCategory>? Categories => categories;
 
+        /// <summary>
+        /// ICommon interface, feed implementation of Categories.
+        /// </summary>
         List<FeedCategory>? ICommonFeed.Categories { get => categories; set => categories = value; }
-
-        /// <summary>
-        /// A string indicating the program used to generate the feed.
-        /// </summary>
-        public string? Generator { get; internal set; }
-
-        /// <summary>
-        /// A URL that points to the documentation for the format used for the feed.
-        /// </summary>
-        public Uri? Docs { get; internal set; }
 
         /// <summary>
         /// Allows processes to register with a cloud to be notified of updates to the feed, implementing a lightweight publish-subscribe protocol for feeds.
@@ -119,29 +69,34 @@ namespace Awesome.FeedParser.Models
         public FeedCloud? Cloud { get; internal set; }
 
         /// <summary>
-        /// Number of minutes that indicates how long a feed can be cached before refreshing from the source.
+        /// Copyright notice for content in the feed.
         /// </summary>
-        public TimeSpan Ttl { get; internal set; }
+        public string? Copyright { get; internal set; }
 
         /// <summary>
-        /// Protocol for Web Description Resources (POWDER)
+        /// Phrase or sentence describing the feed.
         /// </summary>
-        public string? Rating { get; internal set; }
+        public string? Description { get; internal set; }
 
         /// <summary>
-        /// Specifies a text input box that can be displayed with the feed.
+        /// ICommon interface, feed implementation of Description.
         /// </summary>
-        public FeedTextInput? TextInput { get; internal set; }
+        string? ICommonFeed.Description { get => Description; set => Description = value; }
 
         /// <summary>
-        /// Identifies the hours of the day during which the feed is not updated.
+        /// A URL that points to the documentation for the format used for the feed.
         /// </summary>
-        public IReadOnlyList<int>? SkipHours { get; internal set; }
+        public Uri? Docs { get; internal set; }
 
         /// <summary>
-        /// Identifies days of the week during which the feed is not updated.
+        /// A string indicating the program used to generate the feed.
         /// </summary>
-        public WeekDays? SkipDays { get; internal set; }
+        public string? Generator { get; internal set; }
+
+        /// <summary>
+        /// Specifies a GIF, JPEG or PNG image that can be displayed with the feed.
+        /// </summary>
+        public FeedImage? Image { get; internal set; }
 
         /// <summary>
         /// Private list of feed items used when parsing feed.
@@ -149,46 +104,118 @@ namespace Awesome.FeedParser.Models
         private List<FeedItem> items = new List<FeedItem>();
 
         /// <summary>
-        /// Read only list with all feed items
+        /// Read only list with all feed items.
         /// </summary>
         public IReadOnlyList<FeedItem> Items => items;
 
         /// <summary>
-        /// Interface implementation for RSS 0.91 feed items
+        /// Interface implementation for RSS 0.91 feed items.
         /// </summary>
         IEnumerable<IRSS_0_91_Item> IRSS_0_91_Feed.Items => Items.Cast<IRSS_0_91_Item>();
 
         /// <summary>
-        /// Interface implementation for RSS 0.92 feed items
+        /// Interface implementation for RSS 0.92 feed items.
         /// </summary>
         IEnumerable<IRSS_0_92_Item> IRSS_0_92_Feed.Items => Items.Cast<IRSS_0_92_Item>();
 
         /// <summary>
-        /// Interface implementation for RSS 1.0 feed items
+        /// Interface implementation for RSS 1.0 feed items.
         /// </summary>
         IEnumerable<IRSS_1_0_Item> IRSS_1_0_Feed.Items => Items.Cast<IRSS_1_0_Item>();
 
         /// <summary>
-        /// Interface implementation for RSS 2.0 feed items
+        /// Interface implementation for RSS 2.0 feed items.
         /// </summary>
         IEnumerable<IRSS_2_0_Item> IRSS_2_0_Feed.Items => Items.Cast<IRSS_2_0_Item>();
 
         /// <summary>
-        /// Interface implementation for Atom feed entries
+        /// Interface implementation for Atom feed entries.
         /// </summary>
         IEnumerable<IAtomEntry> IAtomFeed.Entries => Items.Cast<IAtomEntry>();
 
+        /// <summary>
+        /// An RDF Sequence is used to contain all the items to denote item order for rendering and reconstruction. (RSS 1.0 Only)
+        /// </summary>
+        public IEnumerable<Uri>? ItemsSequence { get; internal set; }
+
+        /// <summary>
+        /// The language the feed is written in. (ISO 639)
+        /// </summary>
+        public CultureInfo? Language { get; internal set; }
+
+        /// <summary>
+        /// The last time the content of the feed changed.
+        /// </summary>
+        public DateTime? LastBuildDate { get; internal set; }
+
+        /// <summary>
+        /// The URL to the HTML website corresponding to the feed.
+        /// </summary>
+        public Uri? Link { get; internal set; }
+
+        /// <summary>
+        /// ICommon interface, feed implementation of Link.
+        /// </summary>
+        Uri? ICommonFeed.Link { get => Link; set => Link = value; }
+
+        /// <summary>
+        /// Email address for person responsible for editorial content.
+        /// </summary>
+        public MailAddress? ManagingEditor { get; internal set; }
+
+        /// <summary>
+        /// The publication date for the content in the feed.
+        /// </summary>
+        public DateTime? PubDate { get; internal set; }
+
+        /// <summary>
+        /// ICommon interface, feed implementation of PubDate.
+        /// </summary>
+        DateTime? ICommonFeed.PubDate { get => PubDate; set => PubDate = value; }
+
+        /// <summary>
+        /// Protocol for Web Description Resources (POWDER)
+        /// </summary>
+        public string? Rating { get; internal set; }
+
+        /// <summary>
+        /// Identifies days of the week during which the feed is not updated.
+        /// </summary>
+        public WeekDays? SkipDays { get; internal set; }
+
+        /// <summary>
+        /// Identifies the hours of the day during which the feed is not updated.
+        /// </summary>
+        public IReadOnlyList<int>? SkipHours { get; internal set; }
+
+        /// <summary>
+        /// Specifies a text input box that can be displayed with the feed.
+        /// </summary>
+        public FeedTextInput? TextInput { get; internal set; }
+
+        /// <summary>
+        /// The name of the feed.
+        /// </summary>
+        public string? Title { get; internal set; }
+
+        /// <summary>
+        /// ICommon interface, feed implementation of Title.
+        /// </summary>
+        string? ICommonFeed.Title { get => Title; set => Title = value; }
+
+        /// <summary>
+        /// Number of minutes that indicates how long a feed can be cached before refreshing from the source.
+        /// </summary>
+        public TimeSpan Ttl { get; internal set; }
+
+        /// <summary>
+        /// Email address for person responsible for technical issues relating to the feed.
+        /// </summary>
+        public MailAddress? WebMaster { get; internal set; }
+
+        #endregion RSS / Atom
+
         #region Extended Namespaces
-
-        /// <summary>
-        /// Flag indicatig if feed has iTunes information.
-        /// </summary>
-        public bool HasITunes => ITunes != null;
-
-        /// <summary>
-        /// The iTunes specific feed information.
-        /// </summary>
-        public ITunesFeed? ITunes { get; internal set; }
 
         /// <summary>
         /// Flag indicatig if feed has Spotify information.
@@ -199,6 +226,16 @@ namespace Awesome.FeedParser.Models
         /// The Spotify specific feed information.
         /// </summary>
         public SpotifyFeed? Spotify { get; internal set; }
+
+        /// <summary>
+        /// Flag indicatig if feed has iTunes information.
+        /// </summary>
+        public bool HasITunes => ITunes != null;
+
+        /// <summary>
+        /// The iTunes specific feed information.
+        /// </summary>
+        public ITunesFeed? ITunes { get; internal set; }
 
         #endregion Extended Namespaces
 

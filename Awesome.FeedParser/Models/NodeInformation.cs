@@ -5,6 +5,8 @@ namespace Awesome.FeedParser.Models
     public class NodeInformation
     {
         public string? Name { get; internal set; }
+        public string? Prefix { get; internal set; }
+        public string? LocalName { get; internal set; }
         public XmlNodeType? Type { get; internal set; }
         public string? Value { get; internal set; }
         public string? Namespace { get; internal set; }
@@ -13,5 +15,7 @@ namespace Awesome.FeedParser.Models
         public int? Depth { get; internal set; }
         public bool? IsEmpty { get; internal set; }
         public bool? HasAttributes { get; internal set; }
+
+        public override string ToString() => Name ?? base.ToString();
     }
 }

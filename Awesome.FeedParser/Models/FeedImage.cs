@@ -4,6 +4,11 @@ namespace Awesome.FeedParser.Models
 {
     public class FeedImage
     {
+        /// <summary>
+        /// Url to information about image. (RSS 1.0 Only)
+        /// </summary>
+        public Uri? About { get; internal set; }
+
         public string? Title { get; internal set; }
 
         public string? Description { get; internal set; }

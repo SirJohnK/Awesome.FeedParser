@@ -21,10 +21,10 @@ namespace Awesome.FeedParser.Extensions
             }
         }
 
-        public static async Task<Dictionary<string, string>> AllSubTreeElements(this XmlReader reader)
+        public static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
         {
             var rootName = reader.Name;
-            var elements = new Dictionary<string, string>();
+            var elements = new List<KeyValuePair<string, string>>();
             var subTree = reader.ReadSubtree();
             foreach (var element in subTree.AllElements())
             {
@@ -32,11 +32,23 @@ namespace Awesome.FeedParser.Extensions
                 {
                     var localName = subTree.LocalName;
                     subTree.ReadStartElement(element);
-                    elements.Add(localName, await subTree.ReadContentAsStringAsync());
+                    elements.Add(new KeyValuePair<string, string>(localName, await subTree.ReadContentAsStringAsync()));
                 }
             }
             subTree.Close();
             return elements;
+        }
+
+        /// <summary>
+        /// Combines ReadStartElement and ReadContentAsStringAsync XmlReader methods.
+        /// </summary>
+        /// <param name="reader">Current XmlReader.</param>
+        /// <returns></returns>
+        public static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
+        {
+            //Read Start Element
+            if (reader.NodeType == XmlNodeType.Element) reader.ReadStartElement();
+            return reader.ReadContentAsStringAsync();
         }
 
         public static NodeInformation NodeInformation(this XmlReader reader)
@@ -48,6 +60,8 @@ namespace Awesome.FeedParser.Extensions
             return new NodeInformation()
             {
                 Name = reader.Name,
+                Prefix = reader.Prefix,
+                LocalName = reader.LocalName,
                 Type = reader.NodeType,
                 Value = reader.Value,
                 Namespace = reader.NamespaceURI,

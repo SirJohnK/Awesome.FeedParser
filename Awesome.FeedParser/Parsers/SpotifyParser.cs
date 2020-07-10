@@ -2,6 +2,7 @@
 using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,10 +29,12 @@ namespace Awesome.FeedParser.Parsers
         /// <summary>
         /// Main Spotify parsing method.
         /// </summary>
+        /// <param name="parent">Parent stack for current node.</param>
         /// <param name="reader">Current xml feed reader.</param>
         /// <param name="feed">Current feed result.</param>
-        /// <returns></returns>
-        public override async Task<bool> Parse(XmlReader reader, Feed feed)
+        /// <param name="root">Flag indicating if parser is the default root parser.</param>
+        /// <returns>Flag indicating if current node should be parsed or if next node should be retrieved.</returns>
+        public override async Task<bool> Parse(Stack<NodeInformation> parent, XmlReader reader, Feed feed, bool root = true)
         {
             //Init
             bool result;
@@ -40,7 +43,7 @@ namespace Awesome.FeedParser.Parsers
             if (result = reader.NodeType == XmlNodeType.Element && (!reader.IsEmptyElement || reader.HasAttributes))
             {
                 //Init
-                NodeInformation nodeInfo = reader.NodeInformation();
+                var nodeInfo = reader.NodeInformation();
                 feed.Spotify ??= new SpotifyFeed();
 
                 //Add Spotify to feed content type.
@@ -72,7 +75,9 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.MissingAttribute, nodeInfo, feed, null, "recentCount");
                                 }
                             }
-                            result = false;
+                            else
+                                //Feed Spotify object missing
+                                throw new ArgumentNullException("Feed.Spotify");
                         }
                         break;
 
@@ -81,20 +86,21 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.Spotify != null)
                             {
                                 //Get Countries of origin
-                                var content = await reader.ReadElementContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
                                 try
                                 {
                                     //Attempt to set country of origin list
                                     feed.Spotify.CountryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country));
                                 }
-                                catch (ArgumentException ex)
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is ArgumentException)
                                 {
                                     //Unknown node format
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, ex.Message);
                                 }
                             }
                             else
-                                result = false;
+                                //Feed Spotify object missing
+                                throw new ArgumentNullException("Feed.Spotify");
                             break;
                         }
 
@@ -102,8 +108,8 @@ namespace Awesome.FeedParser.Parsers
 
                     default: //Unknown feed/item node, continue to next.
                         {
-                            SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             result = false;
+                            if (root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
                 }
