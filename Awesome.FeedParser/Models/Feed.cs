@@ -206,7 +206,7 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Number of minutes that indicates how long a feed can be cached before refreshing from the source.
         /// </summary>
-        public TimeSpan Ttl { get; internal set; }
+        public TimeSpan? Ttl { get; internal set; }
 
         /// <summary>
         /// Email address for person responsible for technical issues relating to the feed.
