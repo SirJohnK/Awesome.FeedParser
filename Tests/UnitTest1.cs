@@ -105,5 +105,22 @@ namespace Tests
             //Assert
             feed.Should().NotBeNull();
         }
+
+        [TestMethod]
+        public async Task RSS_2_0_Test()
+        {
+            //Init
+            Feed feed;
+            var filename = "RSS_2_0.xml";
+
+            //Open feed file
+            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
+            {
+                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
+            }
+
+            //Assert
+            feed.Should().NotBeNull();
+        }
     }
 }
