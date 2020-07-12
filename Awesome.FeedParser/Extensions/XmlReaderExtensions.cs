@@ -5,14 +5,14 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Extensions
 {
-    public static class XmlReaderExtensions
+    internal static class XmlReaderExtensions
     {
         /// <summary>
         /// Used for easy access of all elements read by an XmlReader.
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public static IEnumerable<string> AllElements(this XmlReader reader)
+        internal static IEnumerable<string> AllElements(this XmlReader reader)
         {
             while (reader.Read())
             {
@@ -21,7 +21,7 @@ namespace Awesome.FeedParser.Extensions
             }
         }
 
-        public static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
+        internal static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
         {
             var rootName = reader.Name;
             var elements = new List<KeyValuePair<string, string>>();
@@ -44,14 +44,14 @@ namespace Awesome.FeedParser.Extensions
         /// </summary>
         /// <param name="reader">Current XmlReader.</param>
         /// <returns></returns>
-        public static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
+        internal static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
         {
             //Read Start Element
             if (reader.NodeType == XmlNodeType.Element) reader.ReadStartElement();
             return reader.ReadContentAsStringAsync();
         }
 
-        public static NodeInformation NodeInformation(this XmlReader reader)
+        internal static NodeInformation NodeInformation(this XmlReader reader)
         {
             //Init
             var lineInfo = (IXmlLineInfo)reader;
@@ -73,7 +73,7 @@ namespace Awesome.FeedParser.Extensions
             };
         }
 
-        public static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
+        internal static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
         {
             //Return new ParseError with Node and Parse information
             return new ParseError(reader.NodeInformation(), parser, errorType, parseType, parseValue, message);

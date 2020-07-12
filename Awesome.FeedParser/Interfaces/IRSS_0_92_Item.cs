@@ -13,7 +13,7 @@ namespace Awesome.FeedParser.Interfaces
         /// <summary>
         /// One or more categories that the feed item belongs to.
         /// </summary>
-        public IReadOnlyList<FeedCategory>? Categories { get; }
+        public IReadOnlyList<ICommonFeedCategory>? Categories { get; }
 
         /// <summary>
         /// Media object that is attached to the feed item.

@@ -18,7 +18,7 @@ namespace Awesome.FeedParser.Interfaces
 
         #endregion Feed Parser
 
-        #region RSS / Atom
+        #region RSS
 
         /// <summary>
         /// One or more categories that the feed/item belongs to.
@@ -28,12 +28,12 @@ namespace Awesome.FeedParser.Interfaces
         /// <summary>
         /// Phrase or sentence describing the feed/item.
         /// </summary>
-        internal string? Description { get; set; }
+        internal FeedText? Description { get; set; }
 
         /// <summary>
         /// The URL to the HTML website corresponding to the feed/item.
         /// </summary>
-        internal Uri? Link { get; set; }
+        internal List<FeedLink>? Links { get; set; }
 
         /// <summary>
         /// The publication date for the content in the feed/item.
@@ -43,8 +43,8 @@ namespace Awesome.FeedParser.Interfaces
         /// <summary>
         /// The name of the feed/item.
         /// </summary>
-        internal string? Title { get; set; }
+        internal FeedText? Title { get; set; }
 
-        #endregion RSS / Atom
+        #endregion RSS
     }
 }

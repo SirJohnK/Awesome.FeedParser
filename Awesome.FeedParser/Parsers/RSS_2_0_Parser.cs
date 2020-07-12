@@ -17,8 +17,8 @@ namespace Awesome.FeedParser.Parsers
         //Parser lazy loaded instance
         public new static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_2_0_Parser());
 
-        //Protected constructor to prevent external initalization
-        protected RSS_2_0_Parser()
+        //private constructor to prevent external initalization
+        private RSS_2_0_Parser()
         {
         }
 
@@ -54,7 +54,8 @@ namespace Awesome.FeedParser.Parsers
                     case "generator": //A string indicating the program used to generate the feed.
                         {
                             //Attempt to parse feed generator
-                            feed.Generator = await reader.ReadStartElementAndContentAsStringAsync();
+                            feed.Generator ??= new FeedGenerator();
+                            feed.Generator.Generator = await reader.ReadStartElementAndContentAsStringAsync();
                             break;
                         }
 
@@ -80,7 +81,8 @@ namespace Awesome.FeedParser.Parsers
                                 try
                                 {
                                     //Attempt to parse feed item author
-                                    feed.CurrentItem.Author = content.ToMailAddress();
+                                    feed.CurrentItem.Author ??= new FeedPerson();
+                                    feed.CurrentItem.Author.Email = content.ToMailAddress();
                                 }
                                 catch (Exception ex) when (ex is ArgumentException || ex is ArgumentNullException || ex is FormatException)
                                 {

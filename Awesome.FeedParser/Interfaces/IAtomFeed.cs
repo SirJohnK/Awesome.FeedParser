@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Awesome.FeedParser.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Awesome.FeedParser.Interfaces
 {
@@ -7,10 +9,57 @@ namespace Awesome.FeedParser.Interfaces
     /// </summary>
     public interface IAtomFeed
     {
-        #region Mandatory
+        #region Required
 
+        /// <summary>
+        /// Identifies the feed using a universally unique and permanent URI.
+        /// </summary>
+        public Uri? Id { get; }
+
+        /// <summary>
+        /// The name of the feed.
+        /// </summary>
+        public FeedText? Title { get; }
+
+        /// <summary>
+        /// Indicates the last time the feed was modified in a significant way.
+        /// </summary>
+        public DateTime? Updated { get; }
+
+        #endregion Required
+
+        #region Optional
+
+        /// <summary>
+        /// Names one author of the feed.
+        /// </summary>
+        public FeedPerson? Author { get; }
+
+        /// <summary>
+        /// One or more categories that the feed belongs to.
+        /// </summary>
+        public IReadOnlyList<IAtomFeedCategory>? Categories { get; }
+
+        /// <summary>
+        /// Name of one or more contributors to the feed entry.
+        /// </summary>
+        public IReadOnlyList<FeedPerson>? Contributors { get; }
+
+        /// <summary>
+        /// Atom feed entries.
+        /// </summary>
         public IEnumerable<IAtomEntry> Entries { get; }
 
-        #endregion Mandatory
+        /// <summary>
+        /// Indicating the program used to generate the feed.
+        /// </summary>
+        public FeedGenerator? Generator { get; }
+
+        /// <summary>
+        /// Links to referenced resources (typically a Web page)
+        /// </summary>
+        public IReadOnlyList<FeedLink>? Links { get; }
+
+        #endregion Optional
     }
 }

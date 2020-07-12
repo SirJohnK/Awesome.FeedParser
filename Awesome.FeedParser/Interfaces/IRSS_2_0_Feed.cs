@@ -11,6 +11,11 @@ namespace Awesome.FeedParser.Interfaces
         #region Optional
 
         /// <summary>
+        /// One or more categories that the feed belongs to.
+        /// </summary>
+        public IReadOnlyList<ICommonFeedCategory>? Categories { get; }
+
+        /// <summary>
         /// A string indicating the program used to generate the feed.
         /// </summary>
         public string? Generator { get; }
