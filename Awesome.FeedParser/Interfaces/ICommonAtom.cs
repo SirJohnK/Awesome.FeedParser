@@ -36,12 +36,12 @@ namespace Awesome.FeedParser.Interfaces
         internal FeedPerson? Author { get; set; }
 
         /// <summary>
-        /// One or more categories that the feed/item belongs to.
+        /// One or more categories that the feed/entry belongs to.
         /// </summary>
         internal List<FeedCategory>? Categories { get; set; }
 
         /// <summary>
-        /// Name of one or more contributors to the feed entry.
+        /// Name of one or more contributors to the feed/entry.
         /// </summary>
         internal List<FeedPerson>? Contributors { get; set; }
 
@@ -49,6 +49,11 @@ namespace Awesome.FeedParser.Interfaces
         /// Links to referenced resources (typically a Web page)
         /// </summary>
         internal List<FeedLink>? Links { get; set; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the feed/entry.
+        /// </summary>
+        internal FeedText? Rights { get; set; }
 
         #endregion Optional
     }

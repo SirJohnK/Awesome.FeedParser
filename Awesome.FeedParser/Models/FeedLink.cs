@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Awesome.FeedParser.Interfaces;
+using System;
 using System.Globalization;
 
 namespace Awesome.FeedParser.Models
@@ -6,8 +7,13 @@ namespace Awesome.FeedParser.Models
     /// <summary>
     /// Feed link information.
     /// </summary>
-    public class FeedLink
+    public class FeedLink : IAtomEntrySource
     {
+        /// <summary>
+        /// IAtomEntrySource interface, feed link implementation of Id.
+        /// </summary>
+        Uri? IAtomEntrySource.Id => Url;
+
         /// <summary>
         /// Indicates the language of the referenced resource.
         /// </summary>
@@ -29,9 +35,19 @@ namespace Awesome.FeedParser.Models
         public string? Text { get; internal set; }
 
         /// <summary>
+        /// IAtomEntrySource interface, feed link implementation of Title.
+        /// </summary>
+        string? IAtomEntrySource.Title => Text;
+
+        /// <summary>
         /// Feed link relationship type.
         /// </summary>
         public FeedLinkType Type { get; internal set; }
+
+        /// <summary>
+        /// Indicates the last time the referenced resource was modified in a significant way.
+        /// </summary>
+        public DateTime? Updated { get; internal set; }
 
         /// <summary>
         /// The URI of the referenced resource.

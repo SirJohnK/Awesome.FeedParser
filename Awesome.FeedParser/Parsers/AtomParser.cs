@@ -343,6 +343,14 @@ namespace Awesome.FeedParser.Parsers
                             break;
                         }
 
+                    case "rights": //Conveys information about rights, e.g. copyrights, held in and over the feed.
+                        {
+                            //Attemp to parse rights
+                            target.Rights = new FeedText() { Type = reader.GetAttribute("type") };
+                            target.Rights.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            break;
+                        }
+
                     case "title": //The name of the feed/entry.
                         {
                             //Attemp to parse title
@@ -368,6 +376,32 @@ namespace Awesome.FeedParser.Parsers
                     #endregion Common
 
                     #region Feed
+
+                    case "icon": //Identifies a small image which provides iconic visual identification for the feed.
+                        {
+                            if (targetFeed != null)
+                            {
+                                //Get icon
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+
+                                try
+                                {
+                                    //Attempt to parse icon URI
+                                    targetFeed.Icon = new Uri(content);
+                                }
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                //Feed Atom object missing
+                                throw new ArgumentNullException("Feed.Atom");
+                            }
+                            break;
+                        }
 
                     case "generator": //Indicating the program used to generate the feed.
                         {
@@ -404,9 +438,180 @@ namespace Awesome.FeedParser.Parsers
                             break;
                         }
 
+                    case "logo": //Identifies a larger image which provides visual identification for the feed.
+                        {
+                            if (targetFeed != null)
+                            {
+                                //Init
+                                targetFeed.Logo = new FeedImage();
+
+                                //Get logo
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+
+                                try
+                                {
+                                    //Attempt to parse logo URI
+                                    targetFeed.Logo.Url = new Uri(content);
+                                }
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                //Feed Atom object missing
+                                throw new ArgumentNullException("Feed.Atom");
+                            }
+                            break;
+                        }
+
+                    case "subtitle": //Contains a human-readable description or subtitle for the feed.
+                        {
+                            if (targetFeed != null)
+                            {
+                                //Attemp to parse subtitle
+                                targetFeed.Subtitle = new FeedText() { Type = reader.GetAttribute("type") };
+                                targetFeed.Subtitle.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            }
+                            else
+                            {
+                                //Feed Atom object missing
+                                throw new ArgumentNullException("Feed.Atom");
+                            }
+                            break;
+                        }
+
                     #endregion Feed
 
                     #region Entry
+
+                    case "content": //Contains or links to the complete content of the entry.
+                        {
+                            if (targetEntry != null)
+                            {
+                                //Attemp to parse content
+                                targetEntry.Content = new FeedContent() { Type = reader.GetAttribute("type") };
+                                targetEntry.Content.Text = await reader.ReadStartElementAndContentAsStringAsync();
+
+                                //Attempt to get content src
+                                var src = reader.GetAttribute("src");
+                                if (src != null)
+                                {
+                                    try
+                                    {
+                                        //Attempt to parse content src
+                                        targetEntry.Content.Source = new Uri(src);
+                                    }
+                                    catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                    {
+                                        //Unknown node format
+                                        SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, src, $"Node: src, {ex.Message}");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (feed.Type == FeedType.Atom)
+                                    //Feed item object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem");
+                                else
+                                    //Feed CurrentItem Atom object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem.Atom");
+                            }
+                            break;
+                        }
+
+                    case "published":
+                        {
+                            if (targetEntry != null)
+                            {
+                                //Get published
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+
+                                //Attemp to parser published
+                                if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var published))
+                                    targetEntry.Published = published;
+                                else
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content);
+                            }
+                            else
+                            {
+                                if (feed.Type == FeedType.Atom)
+                                    //Feed item object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem");
+                                else
+                                    //Feed CurrentItem Atom object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem.Atom");
+                            }
+                            break;
+                        }
+
+                    case "source":
+                        {
+                            if (targetEntry != null)
+                            {
+                                //Init
+                                targetEntry.Source = new FeedLink();
+
+                                //Get source properties
+                                var sourceElements = await reader.AllSubTreeElements();
+                                foreach (var element in sourceElements)
+                                {
+                                    switch (element.Key)
+                                    {
+                                        case "id":
+                                            {
+                                                try
+                                                {
+                                                    //Attempt to parse id URI
+                                                    targetEntry.Source.Url = new Uri(element.Value);
+                                                }
+                                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}, {ex.Message}");
+                                                }
+                                                break;
+                                            }
+                                        case "title":
+                                            {
+                                                //Set title text
+                                                targetEntry.Source.Text = element.Value;
+                                                break;
+                                            }
+                                        case "updated":
+                                            {
+                                                //Attempt to parse updated date
+                                                if (DateTime.TryParse(element.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var updated))
+                                                    targetEntry.Source.Updated = updated;
+                                                else
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                                break;
+                                            }
+                                        default:
+                                            {
+                                                //Unknown node
+                                                SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (feed.Type == FeedType.Atom)
+                                    //Feed item object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem");
+                                else
+                                    //Feed CurrentItem Atom object missing
+                                    throw new ArgumentNullException("Feed.CurrentItem.Atom");
+                            }
+                            break;
+                        }
 
                     case "summary": //Conveys a short summary, abstract, or excerpt of the entry.
                         {

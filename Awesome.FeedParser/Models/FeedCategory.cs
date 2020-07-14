@@ -24,7 +24,7 @@ namespace Awesome.FeedParser.Models
         public string? Label { get; internal set; }
 
         /// <summary>
-        /// Identifies the category.
+        /// IAtomFeedCategory interface, feed category implementation of Term.
         /// </summary>
         string? IAtomFeedCategory.Term => Category;
 

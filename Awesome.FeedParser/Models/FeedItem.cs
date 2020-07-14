@@ -132,7 +132,7 @@ namespace Awesome.FeedParser.Models
         IReadOnlyList<IAtomFeedCategory>? IAtomEntry.Categories { get => Categories; }
 
         /// <summary>
-        /// ICommonAtom interface, feed implementation of Categories.
+        /// ICommonAtom interface, feed item implementation of Categories.
         /// </summary>
         List<FeedCategory>? ICommonAtom.Categories { get => categories; set => categories = value; }
 
@@ -140,6 +140,16 @@ namespace Awesome.FeedParser.Models
         /// URL of a page for comments relating to the feed item.
         /// </summary>
         public Uri? Comments { get; internal set; }
+
+        /// <summary>
+        /// Contains or links to the complete content of the item. (Atom only)
+        /// </summary>
+        public FeedContent? Content { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed entry implementation of Content.
+        /// </summary>
+        FeedContent? ICommonAtomEntry.Content { get => Content; set => Content = value; }
 
         /// <summary>
         /// Internal list of contributors for parser access
@@ -202,9 +212,39 @@ namespace Awesome.FeedParser.Models
         DateTime? ICommonFeed.PubDate { get => PubDate; set => PubDate = value; }
 
         /// <summary>
+        /// IAtomEntry interface, feed entry implementation of Published.
+        /// </summary>
+        DateTime? IAtomEntry.Published { get => PubDate; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed entry implementation of Published.
+        /// </summary>
+        DateTime? ICommonAtomEntry.Published { get => PubDate; set => PubDate = value; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the feed.
+        /// </summary>
+        public FeedText? Rights { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtom interface, feed entry implementation of Rights.
+        /// </summary>
+        FeedText? ICommonAtom.Rights { get => Rights; set => Rights = value; }
+
+        /// <summary>
         /// The feed that the feed item came from.
         /// </summary>
         public FeedLink? Source { get; internal set; }
+
+        /// <summary>
+        /// IAtomEntry interface, feed item implementation of Source.
+        /// </summary>
+        IAtomEntrySource? IAtomEntry.Source { get => Source; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed item implementation of Source.
+        /// </summary>
+        FeedLink? ICommonAtomEntry.Source { get => Source; set => Source = value; }
 
         /// <summary>
         /// IAtomEntry interface, feed item implementation of Summary.

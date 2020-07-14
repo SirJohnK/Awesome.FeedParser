@@ -71,6 +71,16 @@ namespace Awesome.FeedParser.Models
         List<FeedCategory>? ICommonAtom.Categories { get => categories; set => categories = value; }
 
         /// <summary>
+        /// Contains or links to the complete content of the entry.
+        /// </summary>
+        public FeedContent? Content { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed entry implementation of Content.
+        /// </summary>
+        FeedContent? ICommonAtomEntry.Content { get => Content; set => Content = value; }
+
+        /// <summary>
         /// Internal list of contributors for parser access
         /// </summary>
         internal List<FeedPerson>? contributors;
@@ -99,6 +109,36 @@ namespace Awesome.FeedParser.Models
         /// ICommonAtom interface, feed entry implementation of Link.
         /// </summary>
         List<FeedLink>? ICommonAtom.Links { get => links; set => links = value; }
+
+        /// <summary>
+        /// Contains the time of the initial creation or first availability of the entry.
+        /// </summary>
+        public DateTime? Published { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed entry implementation of Published.
+        /// </summary>
+        DateTime? ICommonAtomEntry.Published { get => Published; set => Published = value; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the entry.
+        /// </summary>
+        public FeedText? Rights { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtom interface, feed entry implementation of Rights.
+        /// </summary>
+        FeedText? ICommonAtom.Rights { get => Rights; set => Rights = value; }
+
+        /// <summary>
+        /// Contains metadata from the source feed if this entry is a copy.
+        /// </summary>
+        public FeedLink? Source { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomEntry interface, feed entry implementation of Source.
+        /// </summary>
+        FeedLink? ICommonAtomEntry.Source { get => Source; set => Source = value; }
 
         /// <summary>
         /// Conveys a short summary, abstract, or excerpt of the entry.

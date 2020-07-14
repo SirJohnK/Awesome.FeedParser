@@ -111,7 +111,12 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Copyright notice for content in the feed.
         /// </summary>
-        public string? Copyright { get; internal set; }
+        public FeedText? Copyright { get; internal set; }
+
+        /// <summary>
+        /// IRSS_0_91_Feed interface, feed implementation of Copyright.
+        /// </summary>
+        string? IRSS_0_91_Feed.Copyright { get => Copyright?.Text; }
 
         /// <summary>
         /// Phrase or sentence describing the feed.
@@ -147,6 +152,16 @@ namespace Awesome.FeedParser.Models
         /// ICommonAtom interface, feed implementation of Generator.
         /// </summary>
         FeedGenerator? ICommonAtomFeed.Generator { get => Generator; set => Generator = value; }
+
+        /// <summary>
+        /// Identifies a small image which provides iconic visual identification for the feed. (Atom only)
+        /// </summary>
+        public Uri? Icon { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Icon.
+        /// </summary>
+        Uri? ICommonAtomFeed.Icon { get => Icon; set => Icon = value; }
 
         /// <summary>
         /// Identifies the feed using a universally unique and permanent URI. (Atom only)
@@ -239,6 +254,16 @@ namespace Awesome.FeedParser.Models
         List<FeedLink>? ICommonAtom.Links { get => links; set => links = value; }
 
         /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Logo.
+        /// </summary>
+        FeedImage? ICommonAtomFeed.Logo { get => Image; set => Image = value; }
+
+        /// <summary>
+        /// IAtomFeed interface, feed implementation of Logo.
+        /// </summary>
+        Uri? IAtomFeed.Logo { get => Image?.Url; }
+
+        /// <summary>
         /// Email address for person responsible for editorial content.
         /// </summary>
         public MailAddress? ManagingEditor { get; internal set; }
@@ -259,6 +284,16 @@ namespace Awesome.FeedParser.Models
         public string? Rating { get; internal set; }
 
         /// <summary>
+        /// IAtomFeed interface, feed entry implementation of Rights.
+        /// </summary>
+        FeedText? IAtomFeed.Rights { get => Copyright; }
+
+        /// <summary>
+        /// ICommonAtom interface, feed entry implementation of Rights.
+        /// </summary>
+        FeedText? ICommonAtom.Rights { get => Copyright; set => Copyright = value; }
+
+        /// <summary>
         /// Identifies days of the week during which the feed is not updated.
         /// </summary>
         public WeekDays? SkipDays { get; internal set; }
@@ -267,6 +302,16 @@ namespace Awesome.FeedParser.Models
         /// Identifies the hours of the day during which the feed is not updated.
         /// </summary>
         public IReadOnlyList<int>? SkipHours { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Subtitle.
+        /// </summary>
+        FeedText? ICommonAtomFeed.Subtitle { get => Description; set => Description = value; }
+
+        /// <summary>
+        /// IAtomFeed interface, feed implementation of Subtitle.
+        /// </summary>
+        FeedText? IAtomFeed.Subtitle { get => Description; }
 
         /// <summary>
         /// Specifies a text input box that can be displayed with the feed.

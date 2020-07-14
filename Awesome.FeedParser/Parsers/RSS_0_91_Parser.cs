@@ -126,7 +126,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "copyright": //Copyright notice for content in the feed.
                         {
-                            feed.Copyright = await reader.ReadStartElementAndContentAsStringAsync();
+                            feed.Copyright = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
                             break;
                         }
 

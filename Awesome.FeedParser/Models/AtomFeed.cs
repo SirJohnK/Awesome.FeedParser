@@ -94,9 +94,19 @@ namespace Awesome.FeedParser.Models
         public FeedGenerator? Generator { get; internal set; }
 
         /// <summary>
-        /// ICommonAtom interface, feed implementation of Generator.
+        /// ICommonAtomFeed interface, feed implementation of Generator.
         /// </summary>
         FeedGenerator? ICommonAtomFeed.Generator { get => Generator; set => Generator = value; }
+
+        /// <summary>
+        /// Identifies a small image which provides iconic visual identification for the feed.
+        /// </summary>
+        public Uri? Icon { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Icon.
+        /// </summary>
+        Uri? ICommonAtomFeed.Icon { get => Icon; set => Icon = value; }
 
         /// <summary>
         /// Internal list of links for parser access
@@ -112,6 +122,36 @@ namespace Awesome.FeedParser.Models
         /// ICommonAtom interface, feed implementation of Link.
         /// </summary>
         List<FeedLink>? ICommonAtom.Links { get => links; set => links = value; }
+
+        /// <summary>
+        /// Identifies a larger image which provides visual identification for the feed.
+        /// </summary>
+        public FeedImage? Logo { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Logo.
+        /// </summary>
+        FeedImage? ICommonAtomFeed.Logo { get => Logo; set => Logo = value; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the feed.
+        /// </summary>
+        public FeedText? Rights { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtom interface, feed implementation of Rights.
+        /// </summary>
+        FeedText? ICommonAtom.Rights { get => Rights; set => Rights = value; }
+
+        /// <summary>
+        /// Contains a human-readable description or subtitle for the feed.
+        /// </summary>
+        public FeedText? Subtitle { get; internal set; }
+
+        /// <summary>
+        /// ICommonAtomFeed interface, feed implementation of Subtitle.
+        /// </summary>
+        FeedText? ICommonAtomFeed.Subtitle { get => Subtitle; set => Subtitle = value; }
 
         #endregion Optional
     }

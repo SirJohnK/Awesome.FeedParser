@@ -41,6 +41,11 @@ namespace Awesome.FeedParser.Interfaces
         public IReadOnlyList<IAtomFeedCategory>? Categories { get; }
 
         /// <summary>
+        /// Contains or links to the complete content of the entry.
+        /// </summary>
+        public FeedContent? Content { get; }
+
+        /// <summary>
         /// Name of one or more contributors to the feed entry.
         /// </summary>
         public IReadOnlyList<FeedPerson>? Contributors { get; }
@@ -49,6 +54,21 @@ namespace Awesome.FeedParser.Interfaces
         /// Links to referenced resources (typically a Web page)
         /// </summary>
         public IReadOnlyList<FeedLink>? Links { get; }
+
+        /// <summary>
+        /// Contains the time of the initial creation or first availability of the entry.
+        /// </summary>
+        public DateTime? Published { get; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the entry.
+        /// </summary>
+        public FeedText? Rights { get; }
+
+        /// <summary>
+        /// Contains metadata from the source feed if this entry is a copy.
+        /// </summary>
+        public IAtomEntrySource? Source { get; }
 
         /// <summary>
         /// Conveys a short summary, abstract, or excerpt of the entry.

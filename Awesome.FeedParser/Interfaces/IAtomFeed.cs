@@ -56,9 +56,29 @@ namespace Awesome.FeedParser.Interfaces
         public FeedGenerator? Generator { get; }
 
         /// <summary>
+        /// Identifies a small image which provides iconic visual identification for the feed.
+        /// </summary>
+        public Uri? Icon { get; }
+
+        /// <summary>
         /// Links to referenced resources (typically a Web page)
         /// </summary>
         public IReadOnlyList<FeedLink>? Links { get; }
+
+        /// <summary>
+        /// Identifies a larger image which provides visual identification for the feed.
+        /// </summary>
+        public Uri? Logo { get; }
+
+        /// <summary>
+        /// Conveys information about rights, e.g. copyrights, held in and over the feed.
+        /// </summary>
+        public FeedText? Rights { get; }
+
+        /// <summary>
+        /// Contains a human-readable description or subtitle for the feed.
+        /// </summary>
+        public FeedText? Subtitle { get; }
 
         #endregion Optional
     }
