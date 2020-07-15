@@ -493,7 +493,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse content
                                 targetEntry.Content = new FeedContent() { Type = reader.GetAttribute("type") };
-                                targetEntry.Content.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                targetEntry.Content.Text = await reader.ReadInnerXmlAsync();
 
                                 //Attempt to get content src
                                 var src = reader.GetAttribute("src");
