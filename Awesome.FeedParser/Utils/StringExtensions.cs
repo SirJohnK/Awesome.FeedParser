@@ -13,7 +13,7 @@ namespace Awesome.FeedParser.Utils
         /// </summary>
         /// <param name="address">Mail address text.</param>
         /// <returns>MailAddress with parsed input address text.</returns>
-        public static MailAddress ToMailAddress(this string address)
+        internal static MailAddress ToMailAddress(this string address)
         {
             //Attempt to parse address
             var match = Regex.Match(address, @"^(?<address>.+@.+)\s\((?<name>.+)\)$");
@@ -29,7 +29,7 @@ namespace Awesome.FeedParser.Utils
         /// <param name="camelCaseText">Camel case text.</param>
         /// <param name="delimiter">Word delimiter. (Default: space)</param>
         /// <returns>Word delimited text.</returns>
-        public static string SplitCamelCase(this string camelCaseText, string delimiter = " ")
+        internal static string SplitCamelCase(this string camelCaseText, string delimiter = " ")
         {
             //Split Camel Case and return result
             return string.Join(delimiter, Regex.Split(camelCaseText, @"(?<!^)(?=[A-Z])")); ;

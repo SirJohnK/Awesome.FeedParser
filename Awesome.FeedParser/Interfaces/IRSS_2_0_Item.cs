@@ -26,6 +26,11 @@ namespace Awesome.FeedParser.Interfaces
         /// </summary>
         public FeedGuid? Guid { get; }
 
+        /// <summary>
+        /// The publication date for the content in the feed item.
+        /// </summary>
+        public DateTime? PubDate { get; }
+
         #endregion Optional
     }
 }

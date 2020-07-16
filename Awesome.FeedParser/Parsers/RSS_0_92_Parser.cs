@@ -52,7 +52,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "category": //One or more categories that the feed/item belongs to.
                         {
-                            //Parse and add category to feed catergories list
+                            //Parse and add category to feed/item catergories list
                             var categories = target.Categories ?? new List<FeedCategory>();
                             categories.Add(new FeedCategory() { Domain = reader.GetAttribute("domain"), Category = await reader.ReadStartElementAndContentAsStringAsync() });
                             target.Categories = categories;
@@ -86,11 +86,11 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.CurrentItem != null)
                             {
                                 //Attempt to parse enclosure
-                                feed.CurrentItem.Enclosure = new FeedMedia()
-                                {
-                                    Length = long.Parse(reader.GetAttribute("length")),
-                                    Type = reader.GetAttribute("type")
-                                };
+                                feed.CurrentItem.Enclosure = new FeedMedia() { Type = reader.GetAttribute("type") };
+
+                                //Attempt to parse length
+                                if (long.TryParse(reader.GetAttribute("length"), out var length))
+                                    feed.CurrentItem.Enclosure.Length = length;
 
                                 //Get enclosure url
                                 var content = reader.GetAttribute("url");
@@ -119,7 +119,7 @@ namespace Awesome.FeedParser.Parsers
                                 var content = reader.GetAttribute("url");
 
                                 //Attempt to parse source
-                                feed.CurrentItem.Source = new FeedLink() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
+                                feed.CurrentItem.Source = new FeedLink() { Type = FeedLinkType.Via, Text = await reader.ReadStartElementAndContentAsStringAsync() };
 
                                 try
                                 {

@@ -122,5 +122,56 @@ namespace Tests
             //Assert
             feed.Should().NotBeNull();
         }
+
+        [TestMethod]
+        public async Task Atom_Test()
+        {
+            //Init
+            Feed feed;
+            var filename = "Atom.xml";
+
+            //Open feed file
+            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
+            {
+                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
+            }
+
+            //Assert
+            feed.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task Atom_Extended_Test()
+        {
+            //Init
+            Feed feed;
+            var filename = "Atom_Extended.xml";
+
+            //Open feed file
+            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
+            {
+                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
+            }
+
+            //Assert
+            feed.Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task Atom_Extended_II_Test()
+        {
+            //Init
+            Feed feed;
+            var filename = "Atom_Extended_II.xml";
+
+            //Open feed file
+            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
+            {
+                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
+            }
+
+            //Assert
+            feed.Should().NotBeNull();
+        }
     }
 }

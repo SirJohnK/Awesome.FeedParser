@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Awesome.FeedParser
+namespace Awesome.FeedParser.Exceptions
 {
     /// <summary>
     /// Feed Parser Http Communication Exception.

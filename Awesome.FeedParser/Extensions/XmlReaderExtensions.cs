@@ -1,18 +1,19 @@
 ﻿using Awesome.FeedParser.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace Awesome.FeedParser.Extensions
 {
-    public static class XmlReaderExtensions
+    internal static class XmlReaderExtensions
     {
         /// <summary>
         /// Used for easy access of all elements read by an XmlReader.
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public static IEnumerable<string> AllElements(this XmlReader reader)
+        internal static IEnumerable<string> AllElements(this XmlReader reader)
         {
             while (reader.Read())
             {
@@ -21,7 +22,7 @@ namespace Awesome.FeedParser.Extensions
             }
         }
 
-        public static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
+        internal static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
         {
             var rootName = reader.Name;
             var elements = new List<KeyValuePair<string, string>>();
@@ -43,15 +44,58 @@ namespace Awesome.FeedParser.Extensions
         /// Combines ReadStartElement and ReadContentAsStringAsync XmlReader methods.
         /// </summary>
         /// <param name="reader">Current XmlReader.</param>
+        /// <param name="type">Text content type. (Mime type)</param>
         /// <returns></returns>
-        public static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
+        internal static async Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader, string? type = null)
         {
+            //Init
+            var text = string.Empty;
+
             //Read Start Element
             if (reader.NodeType == XmlNodeType.Element) reader.ReadStartElement();
-            return reader.ReadContentAsStringAsync();
+
+            //Read node based on node type
+            switch (reader.NodeType)
+            {
+                case XmlNodeType.CDATA:
+                case XmlNodeType.EntityReference:
+                case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Text:
+                case XmlNodeType.Whitespace:
+                    {
+                        text = await reader.ReadContentAsStringAsync();
+                        break;
+                    }
+
+                case XmlNodeType.Document:
+                case XmlNodeType.DocumentFragment:
+                case XmlNodeType.DocumentType:
+                case XmlNodeType.Element:
+                case XmlNodeType.Entity:
+                case XmlNodeType.Notation:
+                case XmlNodeType.XmlDeclaration:
+                    {
+                        text = await reader.ReadOuterXmlAsync();
+                        break;
+                    }
+            }
+
+            //Decode text based on text type
+            switch (type)
+            {
+                case "html":
+                case "text/html":
+                    {
+                        text = HttpUtility.HtmlDecode(text);
+                        break;
+                    }
+            }
+
+            //Return result
+            return text;
         }
 
-        public static NodeInformation NodeInformation(this XmlReader reader)
+        internal static NodeInformation NodeInformation(this XmlReader reader)
         {
             //Init
             var lineInfo = (IXmlLineInfo)reader;
@@ -73,7 +117,7 @@ namespace Awesome.FeedParser.Extensions
             };
         }
 
-        public static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
+        internal static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
         {
             //Return new ParseError with Node and Parse information
             return new ParseError(reader.NodeInformation(), parser, errorType, parseType, parseValue, message);

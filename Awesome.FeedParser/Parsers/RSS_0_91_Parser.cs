@@ -54,7 +54,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "description": //Phrase or sentence describing the feed/item.
                         {
-                            target.Description = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Description = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
                             break;
                         }
 
@@ -84,7 +84,7 @@ namespace Awesome.FeedParser.Parsers
                             try
                             {
                                 //Attempt to parse link URL
-                                target.Link = new Uri(content);
+                                target.Links = new List<FeedLink>() { new FeedLink() { Url = new Uri(content) } };
                             }
                             catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
                             {
@@ -96,7 +96,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "title": //The name of the feed/item.
                         {
-                            target.Title = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Title = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
                             break;
                         }
 
@@ -126,7 +126,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "copyright": //Copyright notice for content in the feed.
                         {
-                            feed.Copyright = await reader.ReadStartElementAndContentAsStringAsync();
+                            feed.Copyright = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
                             break;
                         }
 
