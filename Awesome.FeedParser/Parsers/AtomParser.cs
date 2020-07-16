@@ -347,7 +347,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attemp to parse rights
                             target.Rights = new FeedText() { Type = reader.GetAttribute("type") };
-                            target.Rights.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Rights.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Rights.Type);
                             break;
                         }
 
@@ -355,7 +355,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attemp to parse title
                             target.Title = new FeedText() { Type = reader.GetAttribute("type") };
-                            target.Title.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Title.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Title.Type);
                             break;
                         }
 
@@ -473,7 +473,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse subtitle
                                 targetFeed.Subtitle = new FeedText() { Type = reader.GetAttribute("type") };
-                                targetFeed.Subtitle.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                targetFeed.Subtitle.Text = await reader.ReadStartElementAndContentAsStringAsync(targetFeed.Subtitle.Type);
                             }
                             else
                             {
@@ -493,7 +493,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse content
                                 targetEntry.Content = new FeedContent() { Type = reader.GetAttribute("type") };
-                                targetEntry.Content.Text = await reader.ReadInnerXmlAsync();
+                                targetEntry.Content.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Content.Type);
 
                                 //Attempt to get content src
                                 var src = reader.GetAttribute("src");
@@ -619,7 +619,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse summary
                                 targetEntry.Summary = new FeedText() { Type = reader.GetAttribute("type") };
-                                targetEntry.Summary.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                targetEntry.Summary.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Summary.Type);
                             }
                             else
                             {

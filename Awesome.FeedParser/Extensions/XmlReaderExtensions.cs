@@ -1,6 +1,7 @@
 ﻿using Awesome.FeedParser.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace Awesome.FeedParser.Extensions
@@ -43,12 +44,55 @@ namespace Awesome.FeedParser.Extensions
         /// Combines ReadStartElement and ReadContentAsStringAsync XmlReader methods.
         /// </summary>
         /// <param name="reader">Current XmlReader.</param>
+        /// <param name="type">Text content type. (Mime type)</param>
         /// <returns></returns>
-        internal static Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader)
+        internal static async Task<string> ReadStartElementAndContentAsStringAsync(this XmlReader reader, string? type = null)
         {
+            //Init
+            var text = string.Empty;
+
             //Read Start Element
             if (reader.NodeType == XmlNodeType.Element) reader.ReadStartElement();
-            return reader.ReadContentAsStringAsync();
+
+            //Read node based on node type
+            switch (reader.NodeType)
+            {
+                case XmlNodeType.CDATA:
+                case XmlNodeType.EntityReference:
+                case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Text:
+                case XmlNodeType.Whitespace:
+                    {
+                        text = await reader.ReadContentAsStringAsync();
+                        break;
+                    }
+
+                case XmlNodeType.Document:
+                case XmlNodeType.DocumentFragment:
+                case XmlNodeType.DocumentType:
+                case XmlNodeType.Element:
+                case XmlNodeType.Entity:
+                case XmlNodeType.Notation:
+                case XmlNodeType.XmlDeclaration:
+                    {
+                        text = await reader.ReadOuterXmlAsync();
+                        break;
+                    }
+            }
+
+            //Decode text based on text type
+            switch (type)
+            {
+                case "html":
+                case "text/html":
+                    {
+                        text = HttpUtility.HtmlDecode(text);
+                        break;
+                    }
+            }
+
+            //Return result
+            return text;
         }
 
         internal static NodeInformation NodeInformation(this XmlReader reader)
