@@ -10,7 +10,7 @@ namespace Awesome.FeedParser.Models
     /// <summary>
     /// Main Feed Parser Result Class.
     /// </summary>
-    public class Feed : IRSS_0_91_Feed, IRSS_0_92_Feed, IRSS_1_0_Feed, IRSS_2_0_Feed, IAtomFeed, ICommonFeed, ICommonAtomFeed
+    public class Feed : IRSS_0_91_Feed, IRSS_0_92_Feed, IRSS_1_0_Feed, IRSS_2_0_Feed, IAtomFeed, ICommonFeed, ICommonAtomFeed, ICommonContent
     {
         #region Feed Parser
 
@@ -107,6 +107,16 @@ namespace Awesome.FeedParser.Models
         /// Allows processes to register with a cloud to be notified of updates to the feed, implementing a lightweight publish-subscribe protocol for feeds.
         /// </summary>
         public FeedCloud? Cloud { get; internal set; }
+
+        /// <summary>
+        /// Contains the complete content of the feed. (Content only)
+        /// </summary>
+        public FeedContent? Content { get; internal set; }
+
+        /// <summary>
+        /// ICommonContent interface, feed item implementation of Content.
+        /// </summary>
+        FeedContent? ICommonContent.Content { get => Content; set => Content = value; }
 
         /// <summary>
         /// Copyright notice for content in the feed.
@@ -371,6 +381,11 @@ namespace Awesome.FeedParser.Models
         /// The Atom specific feed information.
         /// </summary>
         public AtomFeed? Atom { get; internal set; }
+
+        /// <summary>
+        /// Flag indicatig if feed has Content information.
+        /// </summary>
+        public bool HasContent => Content != null;
 
         /// <summary>
         /// Flag indicatig if feed has Spotify information.
