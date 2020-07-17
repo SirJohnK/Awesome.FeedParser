@@ -9,7 +9,7 @@ namespace Awesome.FeedParser.Models
     /// <summary>
     /// Main Feed Parser Item Result Class.
     /// </summary>
-    public class FeedItem : IRSS_0_91_Item, IRSS_0_92_Item, IRSS_1_0_Item, IRSS_2_0_Item, IAtomEntry, ICommonFeed, ICommonAtomEntry
+    public class FeedItem : IRSS_0_91_Item, IRSS_0_92_Item, IRSS_1_0_Item, IRSS_2_0_Item, IAtomEntry, ICommonFeed, ICommonAtomEntry, ICommonContent
     {
         #region Feed Parser
 
@@ -142,14 +142,19 @@ namespace Awesome.FeedParser.Models
         public Uri? Comments { get; internal set; }
 
         /// <summary>
-        /// Contains or links to the complete content of the item. (Atom only)
+        /// Contains or links to the complete content of the item. (Atom & Content)
         /// </summary>
         public FeedContent? Content { get; internal set; }
 
         /// <summary>
-        /// ICommonAtomEntry interface, feed entry implementation of Content.
+        /// ICommonAtomEntry interface, feed item implementation of Content.
         /// </summary>
         FeedContent? ICommonAtomEntry.Content { get => Content; set => Content = value; }
+
+        /// <summary>
+        /// ICommonContent interface, feed item implementation of Content.
+        /// </summary>
+        FeedContent? ICommonContent.Content { get => Content; set => Content = value; }
 
         /// <summary>
         /// Internal list of contributors for parser access
@@ -269,6 +274,11 @@ namespace Awesome.FeedParser.Models
         /// The Atom specific feed item information.
         /// </summary>
         public AtomEntry? Atom { get; internal set; }
+
+        /// <summary>
+        /// Flag indicatig if feed item has Content information.
+        /// </summary>
+        public bool HasContent => Content != null;
 
         /// <summary>
         /// Flag indicatig if feed item has iTunes information.
