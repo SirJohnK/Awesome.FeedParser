@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,7 +175,12 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Media object that is attached to the feed item.
         /// </summary>
-        public FeedMedia? Enclosure { get; internal set; }
+        public MediaContent? Enclosure { get; internal set; }
+
+        /// <summary>
+        /// IRSS_0_92_Item interface, feed item implementation of Enclosure.
+        /// </summary>
+        IEnclosure? IRSS_0_92_Item.Enclosure { get => Enclosure; }
 
         /// <summary>
         /// A string/link that uniquely identifies the feed item.
@@ -205,6 +211,16 @@ namespace Awesome.FeedParser.Models
         /// ICommonAtom interface, feed item implementation of Link.
         /// </summary>
         List<FeedLink>? ICommonAtom.Links { get => links; set => links = value; }
+
+        /// <summary>
+        /// Internal list of media information for parser access
+        /// </summary>
+        internal List<MediaItem>? media;
+
+        /// <summary>
+        /// One or more media that belongs to the feed item.
+        /// </summary>
+        public IReadOnlyList<MediaItem>? Media => media;
 
         /// <summary>
         /// The publication date for the content in the feed item.
@@ -291,5 +307,35 @@ namespace Awesome.FeedParser.Models
         public ITunesItem? ITunes { get; internal set; }
 
         #endregion Extended Namespaces
+
+        #region internal
+
+        /// <summary>
+        /// Internal property for the current media being parsed
+        /// </summary>
+        internal MediaItem? CurrentMedia { get; set; }
+
+        /// <summary>
+        /// Internal method adding new media to the current feed item being parsed.
+        /// </summary>
+        /// <remarks>
+        /// CurrentMedia will be set to the new media being added.
+        /// </remarks>
+        /// <returns>The new feed item being added.</returns>
+        internal MediaItem AddMedia()
+        {
+            //Create, Save, Set as Current and Return New Media
+            CurrentMedia = new MediaItem();
+            media ??= new List<MediaItem>();
+            media.Add(CurrentMedia);
+            return CurrentMedia;
+        }
+
+        /// <summary>
+        /// Internal method closing the current media.
+        /// </summary>
+        internal void CloseMedia() => CurrentMedia = null;
+
+        #endregion internal
     }
 }

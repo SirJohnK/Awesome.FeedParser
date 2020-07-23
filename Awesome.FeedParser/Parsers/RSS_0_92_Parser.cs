@@ -1,6 +1,7 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -86,24 +87,27 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.CurrentItem != null)
                             {
                                 //Attempt to parse enclosure
-                                feed.CurrentItem.Enclosure = new FeedMedia() { Type = reader.GetAttribute("type") };
+                                var content = new MediaContent() { Type = reader.GetAttribute("type") };
 
                                 //Attempt to parse length
                                 if (long.TryParse(reader.GetAttribute("length"), out var length))
-                                    feed.CurrentItem.Enclosure.Length = length;
+                                    content.FileSize = length;
 
                                 //Get enclosure url
-                                var content = reader.GetAttribute("url");
+                                var url = reader.GetAttribute("url");
                                 try
                                 {
                                     //Attempt to parse enclosure URL
-                                    feed.CurrentItem.Enclosure.Url = new Uri(content);
+                                    content.Url = new Uri(url);
                                 }
                                 catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
                                 {
                                     //Unknown node format
-                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, $"Node: url, {ex.Message}");
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, url, $"Node: url, {ex.Message}");
                                 }
+
+                                //Set item Enclosure
+                                feed.CurrentItem.Enclosure = content;
                             }
                             else
                                 //Feed item object missing

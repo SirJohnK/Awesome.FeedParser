@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Media;
 using System;
 
 namespace Awesome.FeedParser.Models
@@ -6,7 +7,7 @@ namespace Awesome.FeedParser.Models
     /// <summary>
     /// Feed or Item category information.
     /// </summary>
-    public class FeedCategory : ICommonFeedCategory, IAtomFeedCategory
+    public class FeedCategory : ICommonFeedCategory, IAtomFeedCategory, IMediaCategory
     {
         /// <summary>
         /// Identifies a hierarchic location in the indicated taxonomy.

@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Media;
 using System;
 using System.Globalization;
 
@@ -7,7 +8,7 @@ namespace Awesome.FeedParser.Models
     /// <summary>
     /// Feed link information.
     /// </summary>
-    public class FeedLink : IAtomEntrySource
+    public class FeedLink : IAtomEntrySource, IMediaPeerLink, IMediaSubtitle
     {
         /// <summary>
         /// IAtomEntrySource interface, feed link implementation of Id.
@@ -43,6 +44,16 @@ namespace Awesome.FeedParser.Models
         /// Feed link relationship type.
         /// </summary>
         public FeedLinkType Type { get; internal set; }
+
+        /// <summary>
+        /// IMediaPeerLink interface, feed link implementation of Type.
+        /// </summary>
+        string? IMediaPeerLink.Type => MediaType;
+
+        /// <summary>
+        /// IMediaSubtitle interface, feed link implementation of Type.
+        /// </summary>
+        string? IMediaSubtitle.Type => MediaType;
 
         /// <summary>
         /// Indicates the last time the referenced resource was modified in a significant way.

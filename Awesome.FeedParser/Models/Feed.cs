@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -277,6 +278,11 @@ namespace Awesome.FeedParser.Models
         /// Email address for person responsible for editorial content.
         /// </summary>
         public MailAddress? ManagingEditor { get; internal set; }
+
+        /// <summary>
+        /// Feed media information.
+        /// </summary>
+        public MediaInformation? MediaInformation { get; internal set; }
 
         /// <summary>
         /// The publication date for the content in the feed.

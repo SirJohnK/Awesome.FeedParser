@@ -1,10 +1,22 @@
-﻿namespace Awesome.FeedParser.Models
+﻿using Awesome.FeedParser.Interfaces.Media;
+
+namespace Awesome.FeedParser.Models
 {
     /// <summary>
     /// Feed text with text type information.
     /// </summary>
-    public class FeedText
+    public class FeedText : IMediaHash
     {
+        /// <summary>
+        /// IMediaHash interface, feed text implementation of Algo.
+        /// </summary>
+        string? IMediaHash.Algo => Type;
+
+        /// <summary>
+        /// IMediaHash interface, feed text implementation of Hash.
+        /// </summary>
+        string? IMediaHash.Hash => Text;
+
         /// <summary>
         /// Text content.
         /// </summary>
