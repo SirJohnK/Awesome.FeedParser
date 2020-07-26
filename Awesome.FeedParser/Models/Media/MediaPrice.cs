@@ -13,9 +13,12 @@ namespace Awesome.FeedParser.Models.Media
         public string? Currency { get; internal set; }
 
         /// <summary>
-        /// URL pointing to package or subscription information.
+        /// Price information.
         /// </summary>
-        public Uri? Info { get; internal set; }
+        /// <remarks>
+        /// if the type is "package" or "subscription", then info is a URL pointing to package or subscription information.
+        /// </remarks>
+        public string? Info { get; internal set; }
 
         /// <summary>
         /// Price of the media object.

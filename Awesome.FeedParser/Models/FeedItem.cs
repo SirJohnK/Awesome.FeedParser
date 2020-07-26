@@ -213,16 +213,6 @@ namespace Awesome.FeedParser.Models
         List<FeedLink>? ICommonAtom.Links { get => links; set => links = value; }
 
         /// <summary>
-        /// Internal list of media information for parser access
-        /// </summary>
-        internal List<MediaItem>? media;
-
-        /// <summary>
-        /// One or more media that belongs to the feed item.
-        /// </summary>
-        public IReadOnlyList<MediaItem>? Media => media;
-
-        /// <summary>
         /// The publication date for the content in the feed item.
         /// </summary>
         public DateTime? PubDate { get; internal set; }
@@ -282,7 +272,7 @@ namespace Awesome.FeedParser.Models
         #region Extended Namespaces
 
         /// <summary>
-        /// Flag indicatig if feed item has Atom information.
+        /// Flag indicating if feed item has Atom information.
         /// </summary>
         public bool HasAtom => Atom != null;
 
@@ -292,12 +282,12 @@ namespace Awesome.FeedParser.Models
         public AtomEntry? Atom { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed item has Content information.
+        /// Flag indicating if feed item has Content information.
         /// </summary>
         public bool HasContent => Content != null;
 
         /// <summary>
-        /// Flag indicatig if feed item has iTunes information.
+        /// Flag indicating if feed item has iTunes information.
         /// </summary>
         public bool HasITunes => ITunes != null;
 
@@ -306,36 +296,16 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public ITunesItem? ITunes { get; internal set; }
 
+        /// <summary>
+        /// Flag indicating if feed item has Media information.
+        /// </summary>
+        public bool HasMedia => Media != null;
+
+        /// <summary>
+        /// Media that belongs to the feed item.
+        /// </summary>
+        public MediaItem? Media { get; internal set; }
+
         #endregion Extended Namespaces
-
-        #region internal
-
-        /// <summary>
-        /// Internal property for the current media being parsed
-        /// </summary>
-        internal MediaItem? CurrentMedia { get; set; }
-
-        /// <summary>
-        /// Internal method adding new media to the current feed item being parsed.
-        /// </summary>
-        /// <remarks>
-        /// CurrentMedia will be set to the new media being added.
-        /// </remarks>
-        /// <returns>The new feed item being added.</returns>
-        internal MediaItem AddMedia()
-        {
-            //Create, Save, Set as Current and Return New Media
-            CurrentMedia = new MediaItem();
-            media ??= new List<MediaItem>();
-            media.Add(CurrentMedia);
-            return CurrentMedia;
-        }
-
-        /// <summary>
-        /// Internal method closing the current media.
-        /// </summary>
-        internal void CloseMedia() => CurrentMedia = null;
-
-        #endregion internal
     }
 }

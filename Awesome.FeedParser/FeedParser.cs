@@ -32,6 +32,8 @@ namespace Awesome.FeedParser
             { MediaRSSParser.Namespace, MediaRSSParser.Instance },
             { SpotifyParser.Namespace, SpotifyParser.Instance },
             { YoutubeParser.Namespace, YoutubeParser.Instance },
+            { GeoRSSParser.Namespace, GeoRSSParser.Instance },
+            { GeoRSSParser.SecondNamespace, GeoRSSParser.Instance },
         };
 
         /// <summary>

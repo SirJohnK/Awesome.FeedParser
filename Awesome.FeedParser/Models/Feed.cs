@@ -33,7 +33,7 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Flag indicating if any parse errors where found while parsing feed.
         /// </summary>
-        public bool HasParseErrors => ParseError != null;
+        public bool HasParseErrors => ParseError?.Count > 0;
 
         /// <summary>
         /// Parse errors found while parsing feed.
@@ -280,11 +280,6 @@ namespace Awesome.FeedParser.Models
         public MailAddress? ManagingEditor { get; internal set; }
 
         /// <summary>
-        /// Feed media information.
-        /// </summary>
-        public MediaInformation? MediaInformation { get; internal set; }
-
-        /// <summary>
         /// The publication date for the content in the feed.
         /// </summary>
         public DateTime? PubDate { get; internal set; }
@@ -413,6 +408,16 @@ namespace Awesome.FeedParser.Models
         /// </summary>
         public ITunesFeed? ITunes { get; internal set; }
 
+        /// <summary>
+        /// Flag indicating if feed has Media information.
+        /// </summary>
+        public bool HasMedia => MediaInformation != null;
+
+        /// <summary>
+        /// Feed media information.
+        /// </summary>
+        public MediaInformation? MediaInformation { get; internal set; }
+
         #endregion Extended Namespaces
 
         #region internal
@@ -425,7 +430,7 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Internal property for the current item being parsed
         /// </summary>
-        internal FeedItem? CurrentItem { get; set; }
+        internal FeedItem? CurrentItem { get; private set; }
 
         /// <summary>
         /// Internal method adding a new feed item to the current feed being parsed.

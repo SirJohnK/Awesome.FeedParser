@@ -10,7 +10,7 @@ namespace Awesome.FeedParser.Models.Media
         /// <summary>
         /// Geographical location.
         /// </summary>
-        public GeoCoordinate? Coordinate { get; internal set; }
+        public GeoInformation? GeoInformation { get; internal set; }
 
         /// <summary>
         /// Description of the place whose location is being specified.
