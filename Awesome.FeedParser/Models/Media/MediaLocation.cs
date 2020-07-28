@@ -10,7 +10,10 @@ namespace Awesome.FeedParser.Models.Media
         /// <summary>
         /// Geographical location.
         /// </summary>
-        public GeoInformation? GeoInformation { get; internal set; }
+        /// <remarks>
+        /// Init to empty GeoInformation.
+        /// </remarks>
+        public GeoInformation GeoInformation { get; internal set; } = new GeoInformation();
 
         /// <summary>
         /// Description of the place whose location is being specified.

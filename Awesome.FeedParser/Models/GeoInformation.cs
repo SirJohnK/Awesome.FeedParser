@@ -42,6 +42,11 @@ namespace Awesome.FeedParser.Models
         public int? Floor { get; internal set; }
 
         /// <summary>
+        /// The size in meters of a radius or buffer around the geometry object.
+        /// </summary>
+        public int? Radius { get; internal set; }
+
+        /// <summary>
         /// Relationship of the geographical information.
         /// </summary>
         /// <example>is-centered-at</example>

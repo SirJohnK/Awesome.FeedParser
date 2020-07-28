@@ -374,7 +374,7 @@ namespace Awesome.FeedParser.Models
         #region Extended Namespaces
 
         /// <summary>
-        /// Flag indicatig if feed has Atom information.
+        /// Flag indicating if feed has Atom information.
         /// </summary>
         public bool HasAtom => Atom != null;
 
@@ -384,12 +384,22 @@ namespace Awesome.FeedParser.Models
         public AtomFeed? Atom { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed has Content information.
+        /// Flag indicating if feed has Content information.
         /// </summary>
         public bool HasContent => Content != null;
 
         /// <summary>
-        /// Flag indicatig if feed has Spotify information.
+        /// Flag indicating if feed has Geographical information.
+        /// </summary>
+        public bool HasGeoInformation => GeoInformation != null;
+
+        /// <summary>
+        /// Geographical feed information.
+        /// </summary>
+        public GeoInformation? GeoInformation { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating if feed has Spotify information.
         /// </summary>
         public bool HasSpotify => Spotify != null;
 
@@ -399,7 +409,7 @@ namespace Awesome.FeedParser.Models
         public SpotifyFeed? Spotify { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed has iTunes information.
+        /// Flag indicating if feed has iTunes information.
         /// </summary>
         public bool HasITunes => ITunes != null;
 

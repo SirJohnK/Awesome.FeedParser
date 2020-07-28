@@ -287,6 +287,16 @@ namespace Awesome.FeedParser.Models
         public bool HasContent => Content != null;
 
         /// <summary>
+        /// Flag indicating if feed item has Geographical information.
+        /// </summary>
+        public bool HasGeoInformation => GeoInformation != null;
+
+        /// <summary>
+        /// Geographical feed item information.
+        /// </summary>
+        public GeoInformation? GeoInformation { get; internal set; }
+
+        /// <summary>
         /// Flag indicating if feed item has iTunes information.
         /// </summary>
         public bool HasITunes => ITunes != null;

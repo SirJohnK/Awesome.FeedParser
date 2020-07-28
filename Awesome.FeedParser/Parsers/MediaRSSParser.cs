@@ -486,6 +486,41 @@ namespace Awesome.FeedParser.Parsers
 
                     case "location": //Geographical information about various locations captured in the content of a media object. (Conforms to geoRSS)
                         {
+                            //Init
+                            targetInformation.locations ??= new List<MediaLocation>();
+                            var location = new MediaLocation() { Description = reader.GetAttribute("description") };
+
+                            //Attempt to parse loaction
+                            var start = reader.GetAttribute("start");
+                            var end = reader.GetAttribute("end");
+                            if (start != null)
+                            {
+                                //Attempt to parse text start
+                                if (TimeSpan.TryParse(start, out var startTime))
+                                {
+                                    location.StartTime = startTime;
+                                }
+                                else
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, start, $"Node: start");
+                                }
+                            }
+                            if (end != null)
+                            {
+                                //Attempt to parse text end
+                                if (TimeSpan.TryParse(end, out var endTime))
+                                {
+                                    location.EndTime = endTime;
+                                }
+                                else
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, end, $"Node: end");
+                                }
+                            }
+                            //Add location to target locations
+                            targetInformation.locations.Add(location);
                             break;
                         }
 

@@ -36,6 +36,18 @@ namespace Awesome.FeedParser
             { GeoRSSParser.SecondNamespace, GeoRSSParser.Instance },
         };
 
+        internal static Dictionary<FeedContentType, string> ContentTypeNamespace = new Dictionary<FeedContentType, string>()
+        {
+            { FeedContentType.Atom, AtomParser.Namespace },
+            { FeedContentType.Content, ContentParser.Namespace },
+            { FeedContentType.GeoRSS, GeoRSSParser.Namespace },
+            { FeedContentType.ITunes, ITunesParser.Namespace },
+            { FeedContentType.MediaRSS, MediaRSSParser.Namespace },
+            { FeedContentType.Rdf, RdfParser.Namespace },
+            { FeedContentType.Spotify, SpotifyParser.Namespace },
+            { FeedContentType.Youtube, YoutubeParser.Namespace },
+        };
+
         /// <summary>
         /// Parse root node to determine feed type and feed parser.
         /// </summary>
