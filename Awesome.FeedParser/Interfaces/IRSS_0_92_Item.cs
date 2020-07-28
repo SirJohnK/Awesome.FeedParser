@@ -18,7 +18,7 @@ namespace Awesome.FeedParser.Interfaces
         /// <summary>
         /// Media object that is attached to the feed item.
         /// </summary>
-        public FeedMedia? Enclosure { get; }
+        public IEnclosure? Enclosure { get; }
 
         /// <summary>
         /// The feed that the feed item came from.

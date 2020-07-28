@@ -199,7 +199,7 @@ namespace Awesome.FeedParser.Parsers
                                         }
                                     case "height":
                                         {
-                                            //Attempt to parse width
+                                            //Attempt to parse height
                                             if (int.TryParse(element.Value, out var height))
                                                 image.Height = height;
                                             else

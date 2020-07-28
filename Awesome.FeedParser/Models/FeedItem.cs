@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,7 +175,12 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Media object that is attached to the feed item.
         /// </summary>
-        public FeedMedia? Enclosure { get; internal set; }
+        public MediaContent? Enclosure { get; internal set; }
+
+        /// <summary>
+        /// IRSS_0_92_Item interface, feed item implementation of Enclosure.
+        /// </summary>
+        IEnclosure? IRSS_0_92_Item.Enclosure { get => Enclosure; }
 
         /// <summary>
         /// A string/link that uniquely identifies the feed item.
@@ -266,7 +272,7 @@ namespace Awesome.FeedParser.Models
         #region Extended Namespaces
 
         /// <summary>
-        /// Flag indicatig if feed item has Atom information.
+        /// Flag indicating if feed item has Atom information.
         /// </summary>
         public bool HasAtom => Atom != null;
 
@@ -276,12 +282,22 @@ namespace Awesome.FeedParser.Models
         public AtomEntry? Atom { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed item has Content information.
+        /// Flag indicating if feed item has Content information.
         /// </summary>
         public bool HasContent => Content != null;
 
         /// <summary>
-        /// Flag indicatig if feed item has iTunes information.
+        /// Flag indicating if feed item has Geographical information.
+        /// </summary>
+        public bool HasGeoInformation => GeoInformation != null;
+
+        /// <summary>
+        /// Geographical feed item information.
+        /// </summary>
+        public GeoInformation? GeoInformation { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating if feed item has iTunes information.
         /// </summary>
         public bool HasITunes => ITunes != null;
 
@@ -289,6 +305,16 @@ namespace Awesome.FeedParser.Models
         /// The iTunes specific feed item information.
         /// </summary>
         public ITunesItem? ITunes { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating if feed item has Media information.
+        /// </summary>
+        public bool HasMedia => Media != null;
+
+        /// <summary>
+        /// Media that belongs to the feed item.
+        /// </summary>
+        public MediaItem? Media { get; internal set; }
 
         #endregion Extended Namespaces
     }

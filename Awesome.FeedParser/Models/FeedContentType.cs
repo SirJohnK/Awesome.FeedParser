@@ -13,5 +13,6 @@ namespace Awesome.FeedParser.Models
         MediaRSS = 16,
         Spotify = 32,
         Youtube = 64,
+        GeoRSS = 128,
     }
 }

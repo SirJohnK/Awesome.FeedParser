@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,7 +33,7 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Flag indicating if any parse errors where found while parsing feed.
         /// </summary>
-        public bool HasParseErrors => ParseError != null;
+        public bool HasParseErrors => ParseError?.Count > 0;
 
         /// <summary>
         /// Parse errors found while parsing feed.
@@ -373,7 +374,7 @@ namespace Awesome.FeedParser.Models
         #region Extended Namespaces
 
         /// <summary>
-        /// Flag indicatig if feed has Atom information.
+        /// Flag indicating if feed has Atom information.
         /// </summary>
         public bool HasAtom => Atom != null;
 
@@ -383,12 +384,22 @@ namespace Awesome.FeedParser.Models
         public AtomFeed? Atom { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed has Content information.
+        /// Flag indicating if feed has Content information.
         /// </summary>
         public bool HasContent => Content != null;
 
         /// <summary>
-        /// Flag indicatig if feed has Spotify information.
+        /// Flag indicating if feed has Geographical information.
+        /// </summary>
+        public bool HasGeoInformation => GeoInformation != null;
+
+        /// <summary>
+        /// Geographical feed information.
+        /// </summary>
+        public GeoInformation? GeoInformation { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating if feed has Spotify information.
         /// </summary>
         public bool HasSpotify => Spotify != null;
 
@@ -398,7 +409,7 @@ namespace Awesome.FeedParser.Models
         public SpotifyFeed? Spotify { get; internal set; }
 
         /// <summary>
-        /// Flag indicatig if feed has iTunes information.
+        /// Flag indicating if feed has iTunes information.
         /// </summary>
         public bool HasITunes => ITunes != null;
 
@@ -406,6 +417,16 @@ namespace Awesome.FeedParser.Models
         /// The iTunes specific feed information.
         /// </summary>
         public ITunesFeed? ITunes { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating if feed has Media information.
+        /// </summary>
+        public bool HasMedia => MediaInformation != null;
+
+        /// <summary>
+        /// Feed media information.
+        /// </summary>
+        public MediaInformation? MediaInformation { get; internal set; }
 
         #endregion Extended Namespaces
 
@@ -419,7 +440,7 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Internal property for the current item being parsed
         /// </summary>
-        internal FeedItem? CurrentItem { get; set; }
+        internal FeedItem? CurrentItem { get; private set; }
 
         /// <summary>
         /// Internal method adding a new feed item to the current feed being parsed.
