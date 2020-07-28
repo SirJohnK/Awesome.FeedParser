@@ -22,7 +22,7 @@ namespace Awesome.FeedParser.Models.Media
         /// <summary>
         /// Number of seconds the media object plays.
         /// </summary>
-        public int? Duration { get; internal set; }
+        public TimeSpan? Duration { get; internal set; }
 
         /// <summary>
         /// Determines if the object is a sample or the full version of the object, or even if it is a continuous stream (sample | full | nonstop).

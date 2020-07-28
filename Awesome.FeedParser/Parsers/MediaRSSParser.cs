@@ -360,11 +360,47 @@ namespace Awesome.FeedParser.Parsers
 
                     case "copyright": //Provides a means to specify the copyright if no other copyright module is used.
                         {
+                            //Init
+                            var copyright = new MediaLegal();
+
+                            //Attemp to parse copyright
+                            var url = reader.GetAttribute("url");
+                            if (url != null)
+                            {
+                                try
+                                {
+                                    //Attempt to parse copyright url
+                                    copyright.Url = new Uri(url);
+                                }
+                                catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                {
+                                    //Unknown node format
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, url, $"Node: url, {ex.Message}");
+                                }
+                            }
+                            if (!reader.IsEmptyElement)
+                            {
+                                copyright.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            }
+
+                            //Set target copyright
+                            targetInformation.Copyright = copyright;
                             break;
                         }
 
                     case "description": //Description of the media object.
                         {
+                            //Init
+                            var description = new FeedText() { Type = reader.GetAttribute("type") };
+
+                            //Attempt to parse description
+                            if (!reader.IsEmptyElement)
+                            {
+                                description.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            }
+
+                            //Set target description
+                            targetInformation.Description = description;
                             break;
                         }
 
@@ -451,6 +487,19 @@ namespace Awesome.FeedParser.Parsers
 
                     case "keywords": //A short list or comma separated words and phrases describing the media content.
                         {
+                            //Init
+                            targetInformation.keywords ??= new List<string>();
+
+                            //Attempt to parse keywords
+                            if (!reader.IsEmptyElement)
+                            {
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                if (!string.IsNullOrWhiteSpace(content))
+                                {
+                                    content = content.Trim();
+                                    targetInformation.keywords.AddRange(content.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim()));
+                                }
+                            }
                             break;
                         }
 
@@ -696,11 +745,68 @@ namespace Awesome.FeedParser.Parsers
 
                     case "restriction": //Allows complete control of payback of the media using a wide range of criteria.
                         {
+                            //Init
+                            targetInformation.restrictions ??= new List<MediaRestriction>();
+                            var restriction = new MediaRestriction();
+
+                            //Attemp to parse restriction
+                            var relationship = reader.GetAttribute("relationship");
+                            if (relationship != null)
+                            {
+                                switch (relationship)
+                                {
+                                    case "allow": restriction.Relationship = MediaRestrictionRelationship.Allow; break;
+                                    case "deny": restriction.Relationship = MediaRestrictionRelationship.Deny; break;
+                                    default: SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, relationship, $"Node: relationship"); break;
+                                }
+                            }
+                            var type = reader.GetAttribute("type");
+                            if (type != null)
+                            {
+                                switch (type)
+                                {
+                                    case "country": restriction.Type = MediaRestrictionType.Country; break;
+                                    case "sharing": restriction.Type = MediaRestrictionType.Sharing; break;
+                                    case "uri": restriction.Type = MediaRestrictionType.Uri; break;
+                                    default: SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, type, $"Node: type"); break;
+                                }
+                            }
+                            if (!reader.IsEmptyElement)
+                            {
+                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                if (!string.IsNullOrWhiteSpace(content))
+                                {
+                                    //Init
+                                    content = content.Trim();
+                                    restriction.entities ??= new List<string>();
+                                    foreach (var entity in content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim()))
+                                    {
+                                        //Add entity to restriction entities
+                                        restriction.entities.Add(entity);
+                                    }
+                                }
+                            }
+
+                            //Add restriction to target restrictions
+                            targetInformation.restrictions.Add(restriction);
                             break;
                         }
 
                     case "rights": //Rights information of a media object.
                         {
+                            //Init
+                            var status = reader.GetAttribute("status");
+
+                            //Attempt to parse rights
+                            if (!string.IsNullOrWhiteSpace(status))
+                            {
+                                switch (status)
+                                {
+                                    case "official": targetInformation.Rights = MediaRights.Official; break;
+                                    case "userCreated": targetInformation.Rights = MediaRights.UserCreated; break;
+                                    default: SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, status, $"Node: status"); break;
+                                }
+                            }
                             break;
                         }
 
@@ -724,8 +830,61 @@ namespace Awesome.FeedParser.Parsers
                             break;
                         }
 
-                    case "scenes": //Specifies various scenes within a media object.
+                    case "scenes": break; //Specifies various scenes within a media object. (Note: Node ignored!)
+
+                    case "scene": //Specifies a scene within a media object.
                         {
+                            //Init
+                            targetInformation.scenes ??= new List<MediaScene>();
+                            var scene = new MediaScene();
+
+                            //Attemp to parse scene
+                            var sceneElements = await reader.AllSubTreeElements();
+                            foreach (var element in sceneElements)
+                            {
+                                switch (element.Key)
+                                {
+                                    case "sceneTitle": scene.Title = element.Value; break;
+                                    case "sceneDescription": scene.Description = element.Value; break;
+                                    case "sceneStartTime":
+                                        {
+                                            //Attempt to parse sceneStartTime
+                                            if (TimeSpan.TryParse(element.Value, out var startTime))
+                                            {
+                                                scene.StartTime = startTime;
+                                            }
+                                            else
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                            }
+                                            break;
+                                        }
+                                    case "sceneEndTime":
+                                        {
+                                            //Attempt to parse sceneEndTime
+                                            if (TimeSpan.TryParse(element.Value, out var endTime))
+                                            {
+                                                scene.EndTime = endTime;
+                                            }
+                                            else
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}");
+                                            }
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            //Unknown node
+                                            SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
+                                            break;
+                                        }
+                                }
+                            }
+
+                            //Add scene to target scenes
+                            targetInformation.scenes.Add(scene);
                             break;
                         }
 
@@ -826,11 +985,93 @@ namespace Awesome.FeedParser.Parsers
 
                     case "thumbnail": //Image to represent the media.
                         {
+                            //Init
+                            targetInformation.thumbnails ??= new List<MediaThumbnail>();
+                            var thumbnail = new MediaThumbnail();
+
+                            //Get thumbnail attributes
+                            while (reader.MoveToNextAttribute())
+                            {
+                                //Attempt to parse attribute
+                                switch (reader.LocalName)
+                                {
+                                    case "height": //The height of the thumbnail
+                                        {
+                                            //Attempt to parse thumbnail height
+                                            if (int.TryParse(reader.Value, out var height))
+                                            {
+                                                thumbnail.Height = height;
+                                            }
+                                            else
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                            }
+                                            break;
+                                        }
+                                    case "time": //The time offset in relation to the media object
+                                        {
+                                            //Attempt to parse thumbnail time
+                                            if (TimeSpan.TryParse(reader.Value, out var time))
+                                            {
+                                                thumbnail.Time = time;
+                                            }
+                                            else
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                            }
+                                            break;
+                                        }
+                                    case "url": //The url of the thumbnail
+                                        {
+                                            try
+                                            {
+                                                //Attempt to parse thumbnail url
+                                                thumbnail.Url = new Uri(reader.Value);
+                                            }
+                                            catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}, {ex.Message}");
+                                            }
+                                            break;
+                                        }
+                                    case "width": //The width of the thumbnail
+                                        {
+                                            //Attempt to parse width
+                                            if (int.TryParse(reader.Value, out var width))
+                                            {
+                                                thumbnail.Width = width;
+                                            }
+                                            else
+                                            {
+                                                //Unknown node format
+                                                SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                            }
+                                            break;
+                                        }
+                                }
+                            }
+
+                            //Add thumbnail to target thumbnails
+                            targetInformation.thumbnails.Add(thumbnail);
                             break;
                         }
 
                     case "title": //The title of the media object.
                         {
+                            //Init
+                            var title = new FeedText() { Type = reader.GetAttribute("type") };
+
+                            //Attempt to parse title
+                            if (!reader.IsEmptyElement)
+                            {
+                                title.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            }
+
+                            //Set target title
+                            targetInformation.Title = title;
                             break;
                         }
 
@@ -867,10 +1108,30 @@ namespace Awesome.FeedParser.Parsers
                                             }
                                         case "channels": //Number of audio channels in the media object.
                                             {
+                                                //Attempt to parse content channels
+                                                if (int.TryParse(reader.Value, out var channels))
+                                                {
+                                                    content.Channels = channels;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "duration": //Number of seconds the media object plays.
                                             {
+                                                //Attempt to parse content duration
+                                                if (int.TryParse(reader.Value, out var duration))
+                                                {
+                                                    content.Duration = TimeSpan.FromSeconds(duration);
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "expression": //Determines if the object is a sample or the full version of the object, or even if it is a continuous stream (sample | full | nonstop).
@@ -901,26 +1162,86 @@ namespace Awesome.FeedParser.Parsers
                                             }
                                         case "framerate": //Number of frames per second for the media object.
                                             {
+                                                //Attempt to parse content framerate
+                                                if (int.TryParse(reader.Value, out var framerate))
+                                                {
+                                                    content.Framerate = framerate;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "height": //Height of the media object.
                                             {
+                                                //Attempt to parse content height
+                                                if (int.TryParse(reader.Value, out var height))
+                                                {
+                                                    content.Height = height;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "isDefault": //Determines if this is the default object that should be used for the <media:group>.
                                             {
+                                                //Attempt to parse content isDefault
+                                                if (bool.TryParse(reader.Value, out var isDefault))
+                                                {
+                                                    content.IsDefault = isDefault;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "lang": //Primary language encapsulated in the media object. (Language codes: RFC 3066)
                                             {
+                                                try
+                                                {
+                                                    //Attempt to parse content lang
+                                                    content.Language = CultureInfo.GetCultureInfo(reader.Value);
+                                                }
+                                                catch (Exception ex) when (ex is ArgumentException || ex is CultureNotFoundException)
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}, {ex.Message}");
+                                                }
                                                 break;
                                             }
                                         case "medium": //Type of object (image | audio | video | document | executable).
                                             {
+                                                //Attempt to parse content medium
+                                                switch (reader.Value)
+                                                {
+                                                    case "audio": content.Medium = MediaContentMedium.Audio; break;
+                                                    case "document": content.Medium = MediaContentMedium.Document; break;
+                                                    case "executable": content.Medium = MediaContentMedium.Executable; break;
+                                                    case "image": content.Medium = MediaContentMedium.Image; break;
+                                                    case "video": content.Medium = MediaContentMedium.Video; break;
+                                                    default: SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}"); break;
+                                                }
                                                 break;
                                             }
                                         case "samplingrate": //Number of samples per second taken to create the media object.
                                             {
+                                                //Attempt to parse content samplingrate
+                                                if (int.TryParse(reader.Value, out var samplingrate))
+                                                {
+                                                    content.Samplingrate = samplingrate;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         case "type": //Standard MIME type of the object.
@@ -944,6 +1265,16 @@ namespace Awesome.FeedParser.Parsers
                                             }
                                         case "width": //Width of the media object.
                                             {
+                                                //Attempt to parse content width
+                                                if (int.TryParse(reader.Value, out var width))
+                                                {
+                                                    content.Width = width;
+                                                }
+                                                else
+                                                {
+                                                    //Unknown node format
+                                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, reader.Value, $"Node: {reader.LocalName}");
+                                                }
                                                 break;
                                             }
                                         default:
