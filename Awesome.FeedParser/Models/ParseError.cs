@@ -1,4 +1,4 @@
-﻿using Awesome.FeedParser.Utils;
+﻿using Awesome.FeedParser.Extensions;
 using System;
 
 namespace Awesome.FeedParser.Models

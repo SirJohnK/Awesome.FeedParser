@@ -1,7 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-namespace Awesome.FeedParser.Utils
+namespace Awesome.FeedParser.Extensions
 {
     /// <summary>
     /// String extension methods for feed parsing.
