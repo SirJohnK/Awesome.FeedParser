@@ -41,7 +41,8 @@ namespace Awesome.FeedParser.Extensions
                 {
                     var localName = subTree.LocalName;
                     subTree.ReadStartElement(element);
-                    elements.Add(new KeyValuePair<string, string>(localName, await subTree.ReadContentAsStringAsync()));
+                    var content = await subTree.ReadContentAsStringAsync().ConfigureAwait(false);
+                    elements.Add(new KeyValuePair<string, string>(localName, content));
                 }
             }
             subTree.Close();
@@ -71,7 +72,7 @@ namespace Awesome.FeedParser.Extensions
                 case XmlNodeType.Text:
                 case XmlNodeType.Whitespace:
                     {
-                        text = await reader.ReadContentAsStringAsync();
+                        text = await reader.ReadContentAsStringAsync().ConfigureAwait(false);
                         break;
                     }
 
@@ -83,7 +84,7 @@ namespace Awesome.FeedParser.Extensions
                 case XmlNodeType.Notation:
                 case XmlNodeType.XmlDeclaration:
                     {
-                        text = await reader.ReadOuterXmlAsync();
+                        text = await reader.ReadOuterXmlAsync().ConfigureAwait(false);
                         break;
                     }
             }
@@ -128,22 +129,6 @@ namespace Awesome.FeedParser.Extensions
                 IsEmpty = reader.IsEmptyElement,
                 HasAttributes = reader.HasAttributes,
             };
-        }
-
-        /// <summary>
-        /// Create and return parse error information, based on current node.
-        /// </summary>
-        /// <param name="reader">Current XmlReader.</param>
-        /// <param name="parser">Current parser name.</param>
-        /// <param name="errorType">Parse error type.</param>
-        /// <param name="parseType">Current parse type.</param>
-        /// <param name="parseValue">Current node value.</param>
-        /// <param name="message">Parse error message.</param>
-        /// <returns></returns>
-        internal static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
-        {
-            //Return new ParseError with Node and Parse information
-            return new ParseError(reader.NodeInformation(), parser, errorType, parseType, parseValue, message);
         }
     }
 }

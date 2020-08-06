@@ -53,14 +53,16 @@ namespace Awesome.FeedParser.Parsers
 
                     case "description": //Phrase or sentence describing the feed/item.
                         {
-                            target.Description = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
+                            //Get and Set feed/item description
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            target.Description = new FeedText() { Text = content };
                             break;
                         }
 
                     case "language": //The language the feed is written in. (ISO 639)
                         {
                             //Get feed language
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {
@@ -78,7 +80,7 @@ namespace Awesome.FeedParser.Parsers
                     case "link": //The URL to the HTML website corresponding to the feed/item.
                         {
                             //Get link
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {
@@ -95,7 +97,9 @@ namespace Awesome.FeedParser.Parsers
 
                     case "title": //The name of the feed/item.
                         {
-                            target.Title = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
+                            //Get and Set feed/item title
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            target.Title = new FeedText() { Text = content };
                             break;
                         }
 
@@ -108,7 +112,7 @@ namespace Awesome.FeedParser.Parsers
                     case "pubDate": //The publication date for the content in the feed/item.
                         {
                             //Get publication date
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attemp to parser publication date
                             if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var pubDate))
@@ -125,14 +129,16 @@ namespace Awesome.FeedParser.Parsers
 
                     case "copyright": //Copyright notice for content in the feed.
                         {
-                            feed.Copyright = new FeedText() { Text = await reader.ReadStartElementAndContentAsStringAsync() };
+                            //Get and Set feed copyright
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            feed.Copyright = new FeedText() { Text = content };
                             break;
                         }
 
                     case "docs": //A URL that points to the documentation for the format used in the RSS file.
                         {
                             //Get docs
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {
@@ -151,7 +157,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Get image properties
                             var image = feed.Image ?? new FeedImage();
-                            var imageElements = await reader.AllSubTreeElements();
+                            var imageElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in imageElements)
                             {
                                 switch (element.Key)
@@ -221,7 +227,7 @@ namespace Awesome.FeedParser.Parsers
                     case "lastBuildDate": //The last time the content of the feed changed.
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attempt to parse last build date
                             if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var lastBuildDate))
@@ -235,7 +241,7 @@ namespace Awesome.FeedParser.Parsers
                     case "managingEditor": //Email address for person responsible for editorial content.
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {
@@ -252,7 +258,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "rating": //Protocol for Web Description Resources (POWDER)
                         {
-                            feed.Rating = await reader.ReadStartElementAndContentAsStringAsync();
+                            feed.Rating = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
@@ -260,7 +266,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Get skip days
                             var skipDays = WeekDays.None;
-                            var skipDaysElements = await reader.AllSubTreeElements();
+                            var skipDaysElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in skipDaysElements)
                             {
                                 if (element.Key.Equals("day"))
@@ -291,7 +297,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Get skip hours
                             var skipHours = new List<int>();
-                            var skipHoursElements = await reader.AllSubTreeElements();
+                            var skipHoursElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in skipHoursElements)
                             {
                                 if (element.Key.Equals("hour"))
@@ -312,7 +318,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Get text input properties
                             var textInput = feed.TextInput ?? new FeedTextInput();
-                            var textInputElements = await reader.AllSubTreeElements();
+                            var textInputElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in textInputElements)
                             {
                                 switch (element.Key)
@@ -344,7 +350,7 @@ namespace Awesome.FeedParser.Parsers
                     case "webMaster": //Email address for person responsible for technical issues relating to the feed.
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {

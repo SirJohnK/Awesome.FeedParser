@@ -36,6 +36,9 @@ namespace Awesome.FeedParser
             { GeoRSSParser.SecondNamespace, GeoRSSParser.Instance },
         };
 
+        /// <summary>
+        /// Feed Content Type Parser Namespace lookup dictionary.
+        /// </summary>
         internal static Dictionary<FeedContentType, string> ContentTypeNamespace = new Dictionary<FeedContentType, string>()
         {
             { FeedContentType.Atom, AtomParser.Namespace },
@@ -110,6 +113,13 @@ namespace Awesome.FeedParser
             return feedTypeParser;
         }
 
+        /// <summary>
+        /// Main parse feed stream method.
+        /// </summary>
+        /// <param name="source">Feed source name/url.</param>
+        /// <param name="stream">Feed stream.</param>
+        /// <param name="cancellationToken">Parse task cancellation token.</param>
+        /// <returns>The parsed feed result Feed object.</returns>
         public static async Task<Feed> ParseFeedAsync(string source, Stream stream, CancellationToken cancellationToken)
         {
             //Init
@@ -122,7 +132,7 @@ namespace Awesome.FeedParser
             try
             {
                 //Start Reading and move to root node
-                if (parseNode = await reader.MoveToContentAsync() != XmlNodeType.None)
+                if (parseNode = await reader.MoveToContentAsync().ConfigureAwait(false) != XmlNodeType.None)
                 {
                     //Save Parent Node
                     var parent = new Stack<NodeInformation>(new List<NodeInformation>() { reader.NodeInformation() });
@@ -131,7 +141,7 @@ namespace Awesome.FeedParser
                     defaultParser = ParseFeedType(reader, feed) ?? defaultParser;
 
                     //Read first feed node
-                    parseNode = await reader.ReadAsync();
+                    parseNode = await reader.ReadAsync().ConfigureAwait(false);
 
                     //Identify and parse nodes until EOF or Cancellation
                     while (parseNode && !reader.EOF && !cancellationToken.IsCancellationRequested)
@@ -139,14 +149,14 @@ namespace Awesome.FeedParser
                         //Feed node or Extended Namespace node?
                         if (string.IsNullOrWhiteSpace(reader.NamespaceURI))
                             //Parse node with default feed parser
-                            await defaultParser.Value.Parse(parent, reader, feed);
+                            await defaultParser.Value.Parse(parent, reader, feed).ConfigureAwait(false);
                         else if (parseNode = parsers.TryGetValue(reader.NamespaceURI, out var parser))
                             //Parse node with current Namespace parser
-                            await parser.Value.Parse(parent, reader, feed);
+                            await parser.Value.Parse(parent, reader, feed).ConfigureAwait(false);
                         else
                         {
                             //Unknown Namespace
-                            var error = reader.ParseError("FeedParser", ParseErrorType.UnknownNamespace, feed.CurrentParseType);
+                            var error = ParseError.Create(reader.NodeInformation(), "FeedParser", ParseErrorType.UnknownNamespace, feed.CurrentParseType);
                             (feed.ParseError ??= new List<ParseError>()).Add(error);
                             Debug.WriteLine(error);
                         }
@@ -156,7 +166,7 @@ namespace Awesome.FeedParser
                             parent.Push(reader.NodeInformation());
 
                         //Read next node
-                        parseNode = await reader.ReadAsync();
+                        parseNode = await reader.ReadAsync().ConfigureAwait(false);
 
                         //Verify Parent
                         while (parent.Count > 0 && reader.Depth <= parent.Peek().Depth) parent.Pop();
@@ -180,6 +190,12 @@ namespace Awesome.FeedParser
             return feed;
         }
 
+        /// <summary>
+        /// Retrieve and parse feed from specified url.
+        /// </summary>
+        /// <param name="url">Feed Url address.</param>
+        /// <param name="cancellationToken">Parse task cancellation token.</param>
+        /// <returns>The parsed feed result Feed object.</returns>
         public static async Task<Feed> ParseFeedAsync(string url, CancellationToken cancellationToken)
         {
             //Verify parameter
@@ -191,23 +207,18 @@ namespace Awesome.FeedParser
             //Setup Http Client Get Request
             using var client = new HttpClient();
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             //Read response stream regardless of status
-            var stream = await response.Content.ReadAsStreamAsync();
+            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             //If Success, parse feed
-            if (response.IsSuccessStatusCode) return await ParseFeedAsync(url, stream, cancellationToken); ;
+            if (response.IsSuccessStatusCode) return await ParseFeedAsync(url, stream, cancellationToken).ConfigureAwait(false);
 
             //If Failure, Read Error Content and throw Exception
             using var reader = new StreamReader(stream);
-            var content = await reader.ReadToEndAsync();
-            throw new FeedHttpException
-            {
-                Url = url,
-                StatusCode = response.StatusCode,
-                Content = content
-            };
+            var content = await reader.ReadToEndAsync().ConfigureAwait(false);
+            throw new FeedHttpException(request.RequestUri, response.StatusCode, content);
         }
     }
 }

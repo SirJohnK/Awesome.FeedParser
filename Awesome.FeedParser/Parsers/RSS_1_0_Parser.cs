@@ -148,7 +148,7 @@ namespace Awesome.FeedParser.Parsers
                                 }
 
                                 //Get image properties
-                                var imageElements = await reader.AllSubTreeElements();
+                                var imageElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                                 foreach (var element in imageElements)
                                 {
                                     switch (element.Key)
@@ -248,7 +248,7 @@ namespace Awesome.FeedParser.Parsers
                                 }
 
                                 //Get text input properties
-                                var textInputElements = await reader.AllSubTreeElements();
+                                var textInputElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                                 foreach (var element in textInputElements)
                                 {
                                     switch (element.Key)
@@ -285,7 +285,7 @@ namespace Awesome.FeedParser.Parsers
                     default: //Unknown feed/item node
                         {
                             //Try RSS 0.92 Parse
-                            result = await base.Parse(parent, reader, feed, false);
+                            result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
                             if (!result && root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
@@ -294,7 +294,7 @@ namespace Awesome.FeedParser.Parsers
             else
             {
                 //Try RSS 0.92 Parse
-                result = await base.Parse(parent, reader, feed, false);
+                result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
             }
 
             //Return result

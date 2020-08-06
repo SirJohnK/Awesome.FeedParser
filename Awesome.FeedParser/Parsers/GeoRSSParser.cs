@@ -44,7 +44,7 @@ namespace Awesome.FeedParser.Parsers
 
             if (!reader.IsEmptyElement)
             {
-                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(content))
                 {
                     //Attempt to parse coordinates
@@ -163,14 +163,14 @@ namespace Awesome.FeedParser.Parsers
                     case "upperCorner":
                         {
                             //Set target box coordinates
-                            await SetCoordinates(GeoType.Box, target, reader, feed, nodeInfo);
+                            await SetCoordinates(GeoType.Box, target, reader, feed, nodeInfo).ConfigureAwait(false);
                             break;
                         }
 
                     case "elev":
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attempt to parse elevation.
                             if (int.TryParse(content, out var elevation))
@@ -188,21 +188,21 @@ namespace Awesome.FeedParser.Parsers
                     case "featurename": //Feauture name of the geographical information.
                         {
                             //Attempt to parse feature name.
-                            target.FeatureName = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.FeatureName = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
                     case "featuretypetag": //Feauture type of the geographical information.
                         {
                             //Attempt to parse feature type.
-                            target.FeatureType = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.FeatureType = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
                     case "floor":
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attempt to parse floor.
                             if (int.TryParse(content, out var floor))
@@ -220,7 +220,7 @@ namespace Awesome.FeedParser.Parsers
                     case "line": //A line contains a space seperated list of latitude-longitude pairs, with each pair separated by whitespace.
                         {
                             //Set target line coordinates
-                            await SetCoordinates(GeoType.Line, target, reader, feed, nodeInfo);
+                            await SetCoordinates(GeoType.Line, target, reader, feed, nodeInfo).ConfigureAwait(false);
                             break;
                         }
 
@@ -228,7 +228,7 @@ namespace Awesome.FeedParser.Parsers
                     case "pos":
                         {
                             //Set target point coordinates
-                            await SetCoordinates(GeoType.Point, target, reader, feed, nodeInfo);
+                            await SetCoordinates(GeoType.Point, target, reader, feed, nodeInfo).ConfigureAwait(false);
                             break;
                         }
 
@@ -239,13 +239,13 @@ namespace Awesome.FeedParser.Parsers
                                 case "LinearRing": //A polygon contains a space seperated list of latitude-longitude pairs, with each pair separated by whitespace.
                                     {
                                         //Set target polygon coordinates
-                                        await SetCoordinates(GeoType.Polygon, target, reader, feed, nodeInfo);
+                                        await SetCoordinates(GeoType.Polygon, target, reader, feed, nodeInfo).ConfigureAwait(false);
                                         break;
                                     }
                                 case "LineString": //A line contains a space seperated list of latitude-longitude pairs, with each pair separated by whitespace.
                                     {
                                         //Set target line coordinates
-                                        await SetCoordinates(GeoType.Line, target, reader, feed, nodeInfo);
+                                        await SetCoordinates(GeoType.Line, target, reader, feed, nodeInfo).ConfigureAwait(false);
                                         break;
                                     }
                             }
@@ -255,14 +255,14 @@ namespace Awesome.FeedParser.Parsers
                     case "polygon": //A polygon contains a space seperated list of latitude-longitude pairs, with each pair separated by whitespace.
                         {
                             //Set target polygon coordinates
-                            await SetCoordinates(GeoType.Polygon, target, reader, feed, nodeInfo);
+                            await SetCoordinates(GeoType.Polygon, target, reader, feed, nodeInfo).ConfigureAwait(false);
                             break;
                         }
 
                     case "radius":
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attempt to parse radius.
                             if (int.TryParse(content, out var radius))
@@ -280,7 +280,7 @@ namespace Awesome.FeedParser.Parsers
                     case "relationshiptag": //Relationship of the geographical information.
                         {
                             //Attempt to parse relationship.
-                            target.Relationship = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Relationship = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 

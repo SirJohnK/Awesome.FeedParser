@@ -86,7 +86,7 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.Spotify != null)
                             {
                                 //Get Countries of origin
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 try
                                 {
                                     //Attempt to set country of origin list

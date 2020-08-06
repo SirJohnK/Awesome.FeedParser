@@ -84,7 +84,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Get author properties
                             target.Author = new FeedPerson();
-                            var authorElements = await reader.AllSubTreeElements();
+                            var authorElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in authorElements)
                             {
                                 switch (element.Key)
@@ -175,7 +175,7 @@ namespace Awesome.FeedParser.Parsers
                             var contributor = new FeedPerson();
 
                             //Get contributor properties
-                            var contributorElements = await reader.AllSubTreeElements();
+                            var contributorElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in contributorElements)
                             {
                                 switch (element.Key)
@@ -234,7 +234,7 @@ namespace Awesome.FeedParser.Parsers
                     case "id": //Identifies the feed/entry using a universally unique and permanent URI.
                         {
                             //Get id
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             try
                             {
@@ -346,7 +346,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attemp to parse rights
                             target.Rights = new FeedText() { Type = reader.GetAttribute("type") };
-                            target.Rights.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Rights.Type);
+                            target.Rights.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Rights.Type).ConfigureAwait(false);
                             break;
                         }
 
@@ -354,14 +354,14 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attemp to parse title
                             target.Title = new FeedText() { Type = reader.GetAttribute("type") };
-                            target.Title.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Title.Type);
+                            target.Title.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Title.Type).ConfigureAwait(false);
                             break;
                         }
 
                     case "updated": //Indicates the last time the feed/entry was modified in a significant way.
                         {
                             //Init
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Attempt to parse updated date
                             if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var updated))
@@ -381,7 +381,7 @@ namespace Awesome.FeedParser.Parsers
                             if (targetFeed != null)
                             {
                                 //Get icon
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 try
                                 {
@@ -427,7 +427,7 @@ namespace Awesome.FeedParser.Parsers
                                 targetFeed.Generator.Version = reader.GetAttribute("version");
 
                                 //Attempt to parse feed generator
-                                targetFeed.Generator.Generator = await reader.ReadStartElementAndContentAsStringAsync();
+                                targetFeed.Generator.Generator = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             }
                             else
                             {
@@ -445,7 +445,7 @@ namespace Awesome.FeedParser.Parsers
                                 targetFeed.Logo = new FeedImage();
 
                                 //Get logo
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 try
                                 {
@@ -472,7 +472,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse subtitle
                                 targetFeed.Subtitle = new FeedText() { Type = reader.GetAttribute("type") };
-                                targetFeed.Subtitle.Text = await reader.ReadStartElementAndContentAsStringAsync(targetFeed.Subtitle.Type);
+                                targetFeed.Subtitle.Text = await reader.ReadStartElementAndContentAsStringAsync(targetFeed.Subtitle.Type).ConfigureAwait(false);
                             }
                             else
                             {
@@ -492,7 +492,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse content
                                 targetEntry.Content = new FeedContent() { Type = reader.GetAttribute("type") };
-                                targetEntry.Content.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Content.Type);
+                                targetEntry.Content.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Content.Type).ConfigureAwait(false);
 
                                 //Attempt to get content src
                                 var src = reader.GetAttribute("src");
@@ -527,7 +527,7 @@ namespace Awesome.FeedParser.Parsers
                             if (targetEntry != null)
                             {
                                 //Get published
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 //Attemp to parser published
                                 if (DateTime.TryParse(content, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var published))
@@ -556,7 +556,7 @@ namespace Awesome.FeedParser.Parsers
                                 targetEntry.Source = new FeedLink();
 
                                 //Get source properties
-                                var sourceElements = await reader.AllSubTreeElements();
+                                var sourceElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                                 foreach (var element in sourceElements)
                                 {
                                     switch (element.Key)
@@ -618,7 +618,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attemp to parse summary
                                 targetEntry.Summary = new FeedText() { Type = reader.GetAttribute("type") };
-                                targetEntry.Summary.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Summary.Type);
+                                targetEntry.Summary.Text = await reader.ReadStartElementAndContentAsStringAsync(targetEntry.Summary.Type).ConfigureAwait(false);
                             }
                             else
                             {

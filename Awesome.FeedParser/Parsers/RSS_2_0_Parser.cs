@@ -54,14 +54,15 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attempt to parse feed generator
                             feed.Generator ??= new FeedGenerator();
-                            feed.Generator.Generator = await reader.ReadStartElementAndContentAsStringAsync();
+                            feed.Generator.Generator = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
                     case "ttl": //Number of minutes that indicates how long a feed can be cached before refreshing from the source.
                         {
                             //Attempt to parse feed time to live
-                            if (double.TryParse(await reader.ReadStartElementAndContentAsStringAsync(), out var ttl))
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            if (double.TryParse(content, out var ttl))
                                 feed.Ttl = TimeSpan.FromMinutes(ttl);
                             break;
                         }
@@ -75,7 +76,7 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.CurrentItem != null)
                             {
                                 //Init
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 try
                                 {
@@ -100,7 +101,7 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.CurrentItem != null)
                             {
                                 //Init
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 try
                                 {
@@ -125,7 +126,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Attempt to parse feed item guid
                                 var isPermaLink = reader.GetAttribute("isPermaLink");
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 feed.CurrentItem.Guid = new FeedGuid() { Guid = content };
                                 if (bool.TryParse(isPermaLink, out var isLink))
                                 {
@@ -158,7 +159,7 @@ namespace Awesome.FeedParser.Parsers
                     default: //Unknown feed/item node
                         {
                             //Try RSS 1.0 Parse
-                            result = await base.Parse(parent, reader, feed, false);
+                            result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
                             if (!result && root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
@@ -167,7 +168,7 @@ namespace Awesome.FeedParser.Parsers
             else
             {
                 //Try RSS 1.0 Parse
-                result = await base.Parse(parent, reader, feed, false);
+                result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
             }
 
             //Return result
