@@ -1,5 +1,6 @@
 ﻿using Awesome.FeedParser.Interfaces;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

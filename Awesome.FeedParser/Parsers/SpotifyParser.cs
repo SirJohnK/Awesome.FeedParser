@@ -1,6 +1,9 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
+using Awesome.FeedParser.Models.Spotify;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

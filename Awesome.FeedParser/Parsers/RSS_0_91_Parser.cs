@@ -1,6 +1,8 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -265,7 +267,7 @@ namespace Awesome.FeedParser.Parsers
                     case "skipDays": //Identifies days of the week during which the feed is not updated.
                         {
                             //Get skip days
-                            var skipDays = WeekDays.None;
+                            var skipDays = FeedWeekDays.None;
                             var skipDaysElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in skipDaysElements)
                             {
@@ -273,13 +275,13 @@ namespace Awesome.FeedParser.Parsers
                                 {
                                     switch (element.Value)
                                     {
-                                        case "Monday": skipDays |= WeekDays.Monday; break;
-                                        case "Tuesday": skipDays |= WeekDays.Tuesday; break;
-                                        case "Wednesday": skipDays |= WeekDays.Wednesday; break;
-                                        case "Thursday": skipDays |= WeekDays.Thursday; break;
-                                        case "Friday": skipDays |= WeekDays.Friday; break;
-                                        case "Saturday": skipDays |= WeekDays.Saturday; break;
-                                        case "Sunday": skipDays |= WeekDays.Sunday; break;
+                                        case "Monday": skipDays |= FeedWeekDays.Monday; break;
+                                        case "Tuesday": skipDays |= FeedWeekDays.Tuesday; break;
+                                        case "Wednesday": skipDays |= FeedWeekDays.Wednesday; break;
+                                        case "Thursday": skipDays |= FeedWeekDays.Thursday; break;
+                                        case "Friday": skipDays |= FeedWeekDays.Friday; break;
+                                        case "Saturday": skipDays |= FeedWeekDays.Saturday; break;
+                                        case "Sunday": skipDays |= FeedWeekDays.Sunday; break;
                                         default: SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, element.Value, $"Node: {element.Key}"); break;
                                     }
                                 }

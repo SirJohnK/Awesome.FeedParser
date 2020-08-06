@@ -1,5 +1,5 @@
 using Awesome.FeedParser;
-using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;

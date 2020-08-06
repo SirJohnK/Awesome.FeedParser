@@ -1,6 +1,8 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
