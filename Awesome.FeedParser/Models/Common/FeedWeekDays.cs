@@ -2,6 +2,9 @@
 
 namespace Awesome.FeedParser.Models.Common
 {
+    /// <summary>
+    /// Feed week days. Used to identify days of the week during which the feed is not updated.
+    /// </summary>
     [Flags]
     public enum FeedWeekDays
     {

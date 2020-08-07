@@ -2,6 +2,9 @@
 
 namespace Awesome.FeedParser.Models.Common
 {
+    /// <summary>
+    /// Supported feed content types.
+    /// </summary>
     [Flags]
     public enum FeedContentType
     {
