@@ -31,7 +31,7 @@ namespace Awesome.FeedParser.Interfaces.ITunes
         /// <summary>
         /// List of words or phrases used when searching.
         /// </summary>
-        internal IEnumerable<string>? Keywords { get; set; }
+        internal List<string>? Keywords { get; set; }
 
         /// <summary>
         /// The show/episode title specific for Apple Podcasts.

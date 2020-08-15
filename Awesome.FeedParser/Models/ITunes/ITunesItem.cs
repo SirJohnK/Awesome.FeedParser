@@ -44,11 +44,16 @@ namespace Awesome.FeedParser.Models.ITunes
         FeedImage? ICommonITunes.Image { get => Image; set => Image = value; }
 
         /// <summary>
+        /// Internal list of keywords for parser access
+        /// </summary>
+        internal List<string>? keywords;
+
+        /// <summary>
         /// List of words or phrases used when searching.
         /// </summary>
-        public IEnumerable<string>? Keywords { get; internal set; }
+        public IReadOnlyList<string>? Keywords => keywords;
 
-        IEnumerable<string>? ICommonITunes.Keywords { get => Keywords; set => Keywords = value; }
+        List<string>? ICommonITunes.Keywords { get => keywords; set => keywords = value; }
 
         /// <summary>
         /// An episode title specific for Apple Podcasts.

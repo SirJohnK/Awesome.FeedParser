@@ -28,7 +28,7 @@ namespace Awesome.FeedParser.Models.ITunes
         /// <summary>
         /// The show category information.
         /// </summary>
-        public Dictionary<string, IEnumerable<string>>? Category { get; internal set; }
+        public Dictionary<string, List<string>>? Category { get; internal set; }
 
         /// <summary>
         /// The podcast parental advisory information. Explicit language or adult content. (True/False)
@@ -45,11 +45,16 @@ namespace Awesome.FeedParser.Models.ITunes
         FeedImage? ICommonITunes.Image { get => Image; set => Image = value; }
 
         /// <summary>
+        /// Internal list of keywords for parser access
+        /// </summary>
+        internal List<string>? keywords;
+
+        /// <summary>
         /// List of words or phrases used when searching.
         /// </summary>
-        public IEnumerable<string>? Keywords { get; internal set; }
+        public IReadOnlyList<string>? Keywords => keywords;
 
-        IEnumerable<string>? ICommonITunes.Keywords { get => Keywords; set => Keywords = value; }
+        List<string>? ICommonITunes.Keywords { get => keywords; set => keywords = value; }
 
         /// <summary>
         /// The new podcast RSS Feed URL.

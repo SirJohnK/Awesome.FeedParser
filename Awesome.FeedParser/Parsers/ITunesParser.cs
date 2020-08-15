@@ -124,7 +124,7 @@ namespace Awesome.FeedParser.Parsers
                     case "keywords": //List of words or phrases used when searching.
                         {
                             var words = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
-                            target.Keywords = words.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(word => word.Trim());
+                            target.Keywords = words.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(word => word.Trim()).ToList();
                             break;
                         }
 
@@ -178,7 +178,7 @@ namespace Awesome.FeedParser.Parsers
                                 {
                                     //Decode and save category
                                     var subCategories = new List<string>();
-                                    feed.ITunes.Category ??= new Dictionary<string, IEnumerable<string>>();
+                                    feed.ITunes.Category ??= new Dictionary<string, List<string>>();
                                     feed.ITunes.Category.Add(HttpUtility.HtmlDecode(category), subCategories);
                                     //Subcategories?
                                     if (!reader.IsEmptyElement)

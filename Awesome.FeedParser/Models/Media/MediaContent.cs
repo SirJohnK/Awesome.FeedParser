@@ -62,7 +62,7 @@ namespace Awesome.FeedParser.Models.Media
         /// <summary>
         /// IEnclosure interface, feed implementation of Length.
         /// </summary>
-        long? ICommonItemEnclosure.Length { get => FileSize; }
+        long? ICommonItemEnclosure.Length => FileSize;
 
         /// <summary>
         /// Type of object (image | audio | video | document | executable).

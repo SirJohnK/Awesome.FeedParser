@@ -601,7 +601,7 @@ namespace Awesome.FeedParser.Parsers
                             }
 
                             //Set target peer link
-                            targetInformation.PeerLink = link;
+                            targetInformation.peerLink = link;
                             break;
                         }
 
@@ -668,7 +668,7 @@ namespace Awesome.FeedParser.Parsers
                             }
 
                             //Set target player
-                            targetInformation.Player = player;
+                            targetInformation.player = player;
                             break;
                         }
 

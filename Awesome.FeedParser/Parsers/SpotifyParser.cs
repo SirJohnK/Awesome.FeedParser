@@ -93,7 +93,7 @@ namespace Awesome.FeedParser.Parsers
                                 try
                                 {
                                     //Attempt to set country of origin list
-                                    feed.Spotify.CountryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country));
+                                    feed.Spotify.countryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country)).ToList();
                                 }
                                 catch (Exception ex) when (ex is ArgumentNullException || ex is ArgumentException)
                                 {

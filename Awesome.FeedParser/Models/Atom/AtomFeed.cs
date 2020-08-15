@@ -117,7 +117,7 @@ namespace Awesome.FeedParser.Models.Atom
         /// <summary>
         /// Links to referenced resources (typically a Web page)
         /// </summary>
-        public IReadOnlyList<FeedLink>? Link => links;
+        public IReadOnlyList<FeedLink>? Links => links;
 
         /// <summary>
         /// ICommonAtom interface, feed implementation of Link.

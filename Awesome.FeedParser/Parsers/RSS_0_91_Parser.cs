@@ -312,7 +312,7 @@ namespace Awesome.FeedParser.Parsers
                                     //Unknown node
                                     SetParseError(ParseErrorType.UnknownSubNode, nodeInfo, feed, element.Value, element.Key);
                             }
-                            feed.SkipHours = skipHours;
+                            feed.skipHours = skipHours;
                             break;
                         }
 

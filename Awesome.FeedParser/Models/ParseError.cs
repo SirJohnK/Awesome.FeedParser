@@ -31,32 +31,32 @@ namespace Awesome.FeedParser.Models
         /// <summary>
         /// Error node information.
         /// </summary>
-        public NodeInformation? Node { get; }
+        public NodeInformation? Node { get; internal set; }
 
         /// <summary>
         /// Parser at the time of the error.
         /// </summary>
-        public string? Parser { get; }
+        public string? Parser { get; internal set; }
 
         /// <summary>
         /// Parse type at the time of the error.
         /// </summary>
-        public ParseType? ParseType { get; }
+        public ParseType? ParseType { get; internal set; }
 
         /// <summary>
         /// Error parse type.
         /// </summary>
-        public ParseErrorType? ParseErrorType { get; }
+        public ParseErrorType? ParseErrorType { get; internal set; }
 
         /// <summary>
         /// Error parse value.
         /// </summary>
-        public string? ParseValue { get; }
+        public string? ParseValue { get; internal set; }
 
         /// <summary>
         /// Error message.
         /// </summary>
-        public string? Message { get; }
+        public string? Message { get; internal set; }
 
         /// <summary>
         /// Get the Parse Type Name.

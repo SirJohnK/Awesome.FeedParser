@@ -86,7 +86,7 @@ namespace Awesome.FeedParser.Parsers
                                                 }
                                             }
                                         }
-                                        feed.ItemsSequence = itemsSequence;
+                                        feed.itemsSequence = itemsSequence;
                                         break;
                                     }
 

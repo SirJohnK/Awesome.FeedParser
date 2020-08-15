@@ -22,7 +22,7 @@ namespace Awesome.FeedParser.Interfaces.RSS
         /// <summary>
         /// An RDF Sequence is used to contain all the items to denote item order for rendering and reconstruction.
         /// </summary>
-        public IEnumerable<Uri>? ItemsSequence { get; }
+        public IReadOnlyList<Uri>? ItemsSequence { get; }
 
         /// <summary>
         /// RSS 1.0 feed items

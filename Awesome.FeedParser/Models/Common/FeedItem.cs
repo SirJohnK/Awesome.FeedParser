@@ -47,7 +47,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Item interface, feed item implementation of Description.
         /// </summary>
-        string? IRSS_0_91_Item.Description { get => Description?.Text; }
+        string? IRSS_0_91_Item.Description => Description?.Text;
 
         /// <summary>
         /// ICommon interface, feed item implementation of Description.
@@ -72,7 +72,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Item interface, feed item implementation of Title.
         /// </summary>
-        string? IRSS_0_91_Item.Title { get => Title?.Text; }
+        string? IRSS_0_91_Item.Title => Title?.Text;
 
         /// <summary>
         /// ICommon interface, feed item implementation of Title.
@@ -106,7 +106,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_2_0_Item interface, feed item implementation of Author.
         /// </summary>
-        MailAddress? IRSS_2_0_Item.Author { get => Author?.Email; }
+        MailAddress? IRSS_2_0_Item.Author => Author?.Email;
 
         /// <summary>
         /// ICommonAtom interface, feed item implementation of Author.
@@ -126,7 +126,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_92_Item interface, feed item implementation of Categories.
         /// </summary>
-        IReadOnlyList<ICommonFeedCategory>? IRSS_0_92_Item.Categories { get => Categories; }
+        IReadOnlyList<ICommonFeedCategory>? IRSS_0_92_Item.Categories => Categories;
 
         /// <summary>
         /// ICommon interface, feed item implementation of Categories.
@@ -136,7 +136,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomEntry interface, feed item implementation of Categories.
         /// </summary>
-        IReadOnlyList<IAtomFeedCategory>? IAtomEntry.Categories { get => Categories; }
+        IReadOnlyList<IAtomFeedCategory>? IAtomEntry.Categories => Categories;
 
         /// <summary>
         /// ICommonAtom interface, feed item implementation of Categories.
@@ -186,7 +186,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_92_Item interface, feed item implementation of Enclosure.
         /// </summary>
-        ICommonItemEnclosure? IRSS_0_92_Item.Enclosure { get => Enclosure; }
+        ICommonItemEnclosure? IRSS_0_92_Item.Enclosure => Enclosure;
 
         /// <summary>
         /// A string/link that uniquely identifies the feed item.
@@ -206,7 +206,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Item interface, feed item implementation of Link.
         /// </summary>
-        Uri? IRSS_0_91_Item.Link { get => Links?.FirstOrDefault()?.Url; }
+        Uri? IRSS_0_91_Item.Link => Links?.FirstOrDefault()?.Url;
 
         /// <summary>
         /// ICommon interface, feed item implementation of Link.
@@ -231,7 +231,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomEntry interface, feed entry implementation of Published.
         /// </summary>
-        DateTime? IAtomEntry.Published { get => PubDate; }
+        DateTime? IAtomEntry.Published => PubDate;
 
         /// <summary>
         /// ICommonAtomEntry interface, feed entry implementation of Published.
@@ -256,7 +256,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomEntry interface, feed item implementation of Source.
         /// </summary>
-        IAtomEntrySource? IAtomEntry.Source { get => Source; }
+        IAtomEntrySource? IAtomEntry.Source => Source;
 
         /// <summary>
         /// ICommonAtomEntry interface, feed item implementation of Source.
@@ -266,7 +266,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomEntry interface, feed item implementation of Summary.
         /// </summary>
-        FeedText? IAtomEntry.Summary { get => Description; }
+        FeedText? IAtomEntry.Summary => Description;
 
         /// <summary>
         /// ICommonAtomEntry interface, feed item implementation of Summary.

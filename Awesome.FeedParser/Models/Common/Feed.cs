@@ -79,7 +79,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_2_0_Feed interface, feed item implementation of Categories.
         /// </summary>
-        IReadOnlyList<ICommonFeedCategory>? IRSS_2_0_Feed.Categories { get => Categories; }
+        IReadOnlyList<ICommonFeedCategory>? IRSS_2_0_Feed.Categories => Categories;
 
         /// <summary>
         /// ICommon interface, feed implementation of Categories.
@@ -89,7 +89,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomFeed interface, feed item implementation of Categories.
         /// </summary>
-        IReadOnlyList<IAtomFeedCategory>? IAtomFeed.Categories { get => Categories; }
+        IReadOnlyList<IAtomFeedCategory>? IAtomFeed.Categories => Categories;
 
         /// <summary>
         /// ICommonAtom interface, feed implementation of Categories.
@@ -134,7 +134,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Feed interface, feed implementation of Copyright.
         /// </summary>
-        string? IRSS_0_91_Feed.Copyright { get => Copyright?.Text; }
+        string? IRSS_0_91_Feed.Copyright => Copyright?.Text;
 
         /// <summary>
         /// Phrase or sentence describing the feed.
@@ -144,7 +144,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Feed interface, feed implementation of Description.
         /// </summary>
-        string? IRSS_0_91_Feed.Description { get => Description?.Text; }
+        string? IRSS_0_91_Feed.Description => Description?.Text;
 
         /// <summary>
         /// ICommon interface, feed implementation of Description.
@@ -164,7 +164,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_2_0_Feed interface, feed implementation of Generator.
         /// </summary>
-        string? IRSS_2_0_Feed.Generator { get => Generator?.Generator; }
+        string? IRSS_2_0_Feed.Generator => Generator?.Generator;
 
         /// <summary>
         /// ICommonAtom interface, feed implementation of Generator.
@@ -232,9 +232,14 @@ namespace Awesome.FeedParser.Models.Common
         IEnumerable<IAtomEntry> IAtomFeed.Entries => Items.Cast<IAtomEntry>();
 
         /// <summary>
+        /// Internal list of items sequence for parser access
+        /// </summary>
+        internal List<Uri>? itemsSequence;
+
+        /// <summary>
         /// An RDF Sequence is used to contain all the items to denote item order for rendering and reconstruction. (RSS 1.0 Only)
         /// </summary>
-        public IEnumerable<Uri>? ItemsSequence { get; internal set; }
+        public IReadOnlyList<Uri>? ItemsSequence => itemsSequence;
 
         /// <summary>
         /// The language the feed is written in. (ISO 639)
@@ -254,12 +259,12 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// Links to referenced resources (typically a Web page)
         /// </summary>
-        public IReadOnlyList<FeedLink>? Links { get => links; }
+        public IReadOnlyList<FeedLink>? Links => links;
 
         /// <summary>
         /// IRSS_0_91_Feed interface, feed implementation of Link.
         /// </summary>
-        Uri? IRSS_0_91_Feed.Link { get => Links?.FirstOrDefault()?.Url; }
+        Uri? IRSS_0_91_Feed.Link => Links?.FirstOrDefault()?.Url;
 
         /// <summary>
         /// ICommon interface, feed implementation of Link.
@@ -279,7 +284,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomFeed interface, feed implementation of Logo.
         /// </summary>
-        Uri? IAtomFeed.Logo { get => Image?.Url; }
+        Uri? IAtomFeed.Logo => Image?.Url;
 
         /// <summary>
         /// Email address for person responsible for editorial content.
@@ -304,7 +309,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomFeed interface, feed entry implementation of Rights.
         /// </summary>
-        FeedText? IAtomFeed.Rights { get => Copyright; }
+        FeedText? IAtomFeed.Rights => Copyright;
 
         /// <summary>
         /// ICommonAtom interface, feed entry implementation of Rights.
@@ -317,9 +322,14 @@ namespace Awesome.FeedParser.Models.Common
         public FeedWeekDays? SkipDays { get; internal set; }
 
         /// <summary>
+        /// Internal list of skip hours for parser access
+        /// </summary>
+        internal List<int>? skipHours;
+
+        /// <summary>
         /// Identifies the hours of the day during which the feed is not updated.
         /// </summary>
-        public IReadOnlyList<int>? SkipHours { get; internal set; }
+        public IReadOnlyList<int>? SkipHours => skipHours;
 
         /// <summary>
         /// ICommonAtomFeed interface, feed implementation of Subtitle.
@@ -329,7 +339,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomFeed interface, feed implementation of Subtitle.
         /// </summary>
-        FeedText? IAtomFeed.Subtitle { get => Description; }
+        FeedText? IAtomFeed.Subtitle => Description;
 
         /// <summary>
         /// Specifies a text input box that can be displayed with the feed.
@@ -344,7 +354,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IRSS_0_91_Feed interface, feed implementation of Title.
         /// </summary>
-        string? IRSS_0_91_Feed.Title { get => Title?.Text; }
+        string? IRSS_0_91_Feed.Title => Title?.Text;
 
         /// <summary>
         /// ICommon interface, feed implementation of Title.
@@ -364,7 +374,7 @@ namespace Awesome.FeedParser.Models.Common
         /// <summary>
         /// IAtomFeed interface, feed implementation of Updated.
         /// </summary>
-        DateTime? IAtomFeed.Updated { get => LastBuildDate; }
+        DateTime? IAtomFeed.Updated => LastBuildDate;
 
         /// <summary>
         /// ICommonAtom interface, feed implementation of Updated.
