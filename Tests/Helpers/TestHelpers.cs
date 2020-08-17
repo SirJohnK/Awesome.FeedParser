@@ -17,6 +17,8 @@ namespace Tests.Helpers
             var source = resources[name];
             var result = resources.ContainsKey($"{name}_Result") ? resources[$"{name}_Result"] : (name: string.Empty, file: $"{name}_Result.json");
             var serializer = new JsonSerializer() { ContractResolver = new JsonCustomResolver() };
+            serializer.Converters.Add(new MailAddressConverter());
+            serializer.Converters.Add(new RegionInfoConverter());
 
             //Open feed resource
             using Stream stream = Resources.GetResource(source.name);
