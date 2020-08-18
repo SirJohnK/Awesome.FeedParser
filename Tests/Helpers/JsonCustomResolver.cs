@@ -6,10 +6,20 @@ using System.Reflection;
 
 namespace Tests.Helpers
 {
+    /// <summary>
+    /// Custom json resolver to override internal, private and interface properties to enable verification tests.
+    /// </summary>
     internal class JsonCustomResolver : DefaultContractResolver
     {
+        /// <summary>
+        /// Override and update json property handling to be able to read and write the property.
+        /// </summary>
+        /// <param name="member">The member to create a JsonProperty for.</param>
+        /// <param name="memberSerialization">The member's parent MemberSerialization.</param>
+        /// <returns></returns>
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
+            //Init
             JsonProperty result = base.CreateProperty(member, memberSerialization);
 
             //If interface, attempt to get backing field
@@ -34,11 +44,13 @@ namespace Tests.Helpers
             }
             else
             {
+                //If possible, overrride read and write json property settings
                 var propInfo = member as PropertyInfo;
                 result.Readable |= propInfo != null && propInfo.CanRead;
                 result.Writable |= propInfo != null && propInfo.CanWrite;
             }
 
+            //Return updated property
             return result;
         }
     }

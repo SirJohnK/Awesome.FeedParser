@@ -9,8 +9,17 @@ using System.Threading.Tasks;
 
 namespace Tests.Helpers
 {
+    /// <summary>
+    /// Custom test helper methoods.
+    /// </summary>
     internal static class TestHelpers
     {
+        /// <summary>
+        /// Parse and verifies specified resource feed.
+        /// </summary>
+        /// <param name="name">The resource feed name.</param>
+        /// <param name="resources">Current resources feed name and file information.</param>
+        /// <returns>The method task.</returns>
         internal static async Task ParseResource(string name, Dictionary<string, (string name, string file)> resources)
         {
             //Init
