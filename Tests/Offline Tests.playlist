@@ -1,0 +1,140 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="Tests" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Tests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="AtomTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.AtomTests.Atom_Basic" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Atom_Basic" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.AtomTests.Atom_Extended" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Atom_Extended" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.AtomTests.Atom_Extended_II" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Atom_Extended_II" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="GeoRSSTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.GeoRSSTests.GeoRSS_GML_Feed_Line_Multiple_Item_Point" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="GeoRSS_GML_Feed_Line_Multiple_Item_Point" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.GeoRSSTests.GeoRSS_GML_Single_Item_Point" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="GeoRSS_GML_Single_Item_Point" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.GeoRSSTests.GeoRSS_SIMPLE_Single_Item_Point" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="GeoRSS_SIMPLE_Single_Item_Point" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MediaTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.MediaTests.Media_Single_Item_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Media_Single_Item_Content" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.MediaTests.Media_Single_Item_Extended" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Media_Single_Item_Extended" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.MediaTests.Media_Single_Item_Group_Multiple_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Media_Single_Item_Group_Multiple_Content" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.MediaTests.Media_Single_Item_Multiple_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Media_Single_Item_Multiple_Content" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="RSSTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.RSSTests.RSS_0_91" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="RSS_0_91" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.RSSTests.RSS_0_92" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="RSS_0_92" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.RSSTests.RSS_1_0" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="RSS_1_0" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.RSSTests.RSS_1_0_Extended" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="RSS_1_0_Extended" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.RSSTests.RSS_2_0" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="RSS_2_0" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SpecialTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Tests.SpecialTests.Special_Nordigt" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Special_Nordigt" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

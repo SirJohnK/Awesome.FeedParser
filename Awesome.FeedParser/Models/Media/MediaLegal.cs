@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Awesome.FeedParser.Models.Common;
+using System;
 
 namespace Awesome.FeedParser.Models.Media
 {

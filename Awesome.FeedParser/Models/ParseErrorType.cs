@@ -1,5 +1,8 @@
 ﻿namespace Awesome.FeedParser.Models
 {
+    /// <summary>
+    /// Supported parse error types enum.
+    /// </summary>
     public enum ParseErrorType
     {
         General = 0,

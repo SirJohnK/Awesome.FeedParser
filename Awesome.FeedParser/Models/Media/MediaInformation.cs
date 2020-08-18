@@ -1,4 +1,5 @@
 ﻿using Awesome.FeedParser.Interfaces.Media;
+using Awesome.FeedParser.Models.Common;
 using System;
 using System.Collections.Generic;
 
@@ -105,14 +106,24 @@ namespace Awesome.FeedParser.Models.Media
         public IReadOnlyList<MediaLocation>? Locations => locations;
 
         /// <summary>
+        /// Internal peer link field for parser access
+        /// </summary>
+        internal FeedLink? peerLink;
+
+        /// <summary>
         /// Media P2P link.
         /// </summary>
-        public IMediaPeerLink? PeerLink { get; internal set; }
+        public IMediaPeerLink? PeerLink => peerLink;
+
+        /// <summary>
+        /// Internal player field for parser access
+        /// </summary>
+        internal MediaEmbed? player;
 
         /// <summary>
         /// Allows the media object to be accessed through a web browser or media console.
         /// </summary>
-        public IMediaPlayer? Player { get; internal set; }
+        public IMediaPlayer? Player => player;
 
         /// <summary>
         /// Internal list of prices for parser access

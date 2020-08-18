@@ -1,6 +1,8 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
@@ -90,7 +92,7 @@ namespace Awesome.FeedParser.Parsers
                                 var subtree = reader.ReadSubtree();
                                 while (subtree.ReadToFollowing("backLink", reader.NamespaceURI))
                                 {
-                                    var backLink = await subtree.ReadStartElementAndContentAsStringAsync();
+                                    var backLink = await subtree.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                     if (!string.IsNullOrWhiteSpace(backLink))
                                     {
                                         try
@@ -117,7 +119,7 @@ namespace Awesome.FeedParser.Parsers
                             //Attemp to parse category
                             var scheme = reader.GetAttribute("scheme");
                             var category = new FeedCategory() { Label = reader.GetAttribute("label") };
-                            category.Category = await reader.ReadStartElementAndContentAsStringAsync();
+                            category.Category = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             if (scheme != null)
                             {
                                 try
@@ -145,7 +147,7 @@ namespace Awesome.FeedParser.Parsers
                             //Attemp to parse credit
                             var scheme = reader.GetAttribute("scheme");
                             var credit = new MediaCredit() { Role = reader.GetAttribute("role") };
-                            credit.Name = await reader.ReadStartElementAndContentAsStringAsync();
+                            credit.Name = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             if (scheme != null)
                             {
                                 try
@@ -176,7 +178,7 @@ namespace Awesome.FeedParser.Parsers
                                 var subtree = reader.ReadSubtree();
                                 while (subtree.ReadToFollowing("comment", reader.NamespaceURI))
                                 {
-                                    var comment = await subtree.ReadStartElementAndContentAsStringAsync();
+                                    var comment = await subtree.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                     if (!string.IsNullOrWhiteSpace(comment))
                                         targetInformation.comments.Add(comment);
                                 }
@@ -331,7 +333,7 @@ namespace Awesome.FeedParser.Parsers
                                                 community.tags ??= new List<(string Tag, int Weight)>();
 
                                                 //Attempt to parse community tags
-                                                var content = await subtree.ReadStartElementAndContentAsStringAsync();
+                                                var content = await subtree.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                                 var tags = content.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(tag => tag.Trim());
                                                 foreach (var tag in tags)
                                                 {
@@ -380,7 +382,7 @@ namespace Awesome.FeedParser.Parsers
                             }
                             if (!reader.IsEmptyElement)
                             {
-                                copyright.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                copyright.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             }
 
                             //Set target copyright
@@ -396,7 +398,7 @@ namespace Awesome.FeedParser.Parsers
                             //Attempt to parse description
                             if (!reader.IsEmptyElement)
                             {
-                                description.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                description.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             }
 
                             //Set target description
@@ -464,7 +466,11 @@ namespace Awesome.FeedParser.Parsers
                                 while (subtree.ReadToFollowing("param", reader.NamespaceURI))
                                 {
                                     var name = subtree.GetAttribute("name");
-                                    if (name != null) embed.parameters.Add(name, await subtree.ReadStartElementAndContentAsStringAsync());
+                                    if (name != null)
+                                    {
+                                        var content = await subtree.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                                        embed.parameters.Add(name, content);
+                                    }
                                 }
                             }
 
@@ -480,7 +486,7 @@ namespace Awesome.FeedParser.Parsers
 
                             //Attempt to parse hash
                             var hash = new FeedText() { Type = reader.GetAttribute("algo") };
-                            hash.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            hash.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             targetInformation.hash.Add(hash);
                             break;
                         }
@@ -493,7 +499,7 @@ namespace Awesome.FeedParser.Parsers
                             //Attempt to parse keywords
                             if (!reader.IsEmptyElement)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 if (!string.IsNullOrWhiteSpace(content))
                                 {
                                     content = content.Trim();
@@ -526,7 +532,7 @@ namespace Awesome.FeedParser.Parsers
 
                             //Attempt to parse license text
                             if (!reader.IsEmptyElement)
-                                license.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                license.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Set target license
                             targetInformation.License = license;
@@ -595,7 +601,7 @@ namespace Awesome.FeedParser.Parsers
                             }
 
                             //Set target peer link
-                            targetInformation.PeerLink = link;
+                            targetInformation.peerLink = link;
                             break;
                         }
 
@@ -662,7 +668,7 @@ namespace Awesome.FeedParser.Parsers
                             }
 
                             //Set target player
-                            targetInformation.Player = player;
+                            targetInformation.player = player;
                             break;
                         }
 
@@ -717,7 +723,7 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, scheme, $"Node: scheme, {ex.Message}");
                                 }
                             }
-                            rating.Rating = await reader.ReadStartElementAndContentAsStringAsync();
+                            rating.Rating = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Set target rating
                             targetInformation.Rating = rating;
@@ -735,7 +741,7 @@ namespace Awesome.FeedParser.Parsers
                                 var subtree = reader.ReadSubtree();
                                 while (subtree.ReadToFollowing("response", reader.NamespaceURI))
                                 {
-                                    var response = await subtree.ReadStartElementAndContentAsStringAsync();
+                                    var response = await subtree.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                     if (!string.IsNullOrWhiteSpace(response))
                                         targetInformation.responses.Add(response);
                                 }
@@ -773,7 +779,7 @@ namespace Awesome.FeedParser.Parsers
                             }
                             if (!reader.IsEmptyElement)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 if (!string.IsNullOrWhiteSpace(content))
                                 {
                                     //Init
@@ -839,7 +845,7 @@ namespace Awesome.FeedParser.Parsers
                             var scene = new MediaScene();
 
                             //Attemp to parse scene
-                            var sceneElements = await reader.AllSubTreeElements();
+                            var sceneElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                             foreach (var element in sceneElements)
                             {
                                 switch (element.Key)
@@ -976,7 +982,7 @@ namespace Awesome.FeedParser.Parsers
                                     SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, end, $"Node: end");
                                 }
                             }
-                            text.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                            text.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                             //Add text to target texts
                             targetInformation.texts.Add(text);
@@ -1067,7 +1073,7 @@ namespace Awesome.FeedParser.Parsers
                             //Attempt to parse title
                             if (!reader.IsEmptyElement)
                             {
-                                title.Text = await reader.ReadStartElementAndContentAsStringAsync();
+                                title.Text = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             }
 
                             //Set target title

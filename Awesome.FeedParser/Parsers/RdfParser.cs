@@ -1,6 +1,8 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -84,7 +86,7 @@ namespace Awesome.FeedParser.Parsers
                                                 }
                                             }
                                         }
-                                        feed.ItemsSequence = itemsSequence;
+                                        feed.itemsSequence = itemsSequence;
                                         break;
                                     }
 

@@ -1,65 +1,47 @@
-﻿using Awesome.FeedParser;
-using Awesome.FeedParser.Models;
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using System.Threading;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tests.Helpers;
 
 namespace Tests
 {
+    /// <summary>
+    /// Tests for different Geo RSS feeds.
+    /// </summary>
     [TestClass]
     public class GeoRSSTests
     {
-        [TestMethod]
-        public async Task SIMPLE_Single_Item_Point()
+        private const string ResourceId = "GeoRSS_";
+        private Dictionary<string, (string name, string file)> resources;
+
+        /// <summary>
+        /// Setup and get Geo RSS resources.
+        /// </summary>
+        public GeoRSSTests()
         {
-            //Init
-            Feed feed;
-            var filename = "GeoRSS_SIMPLE_Single_Item_Point.xml";
-
-            //Open feed file
-            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
-            {
-                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
-            }
-
-            //Assert
-            feed.Should().NotBeNull();
+            //Get GeoRSS Resources
+            resources = Resources.GetResources(ResourceId);
         }
 
+        /// <summary>
+        /// Parse and verify SIMPLE single item point Geo RSS feed.
+        /// </summary>
+        /// <returns>The test method task.</returns>
         [TestMethod]
-        public async Task GML_Single_Item_Point()
-        {
-            //Init
-            Feed feed;
-            var filename = "GeoRSS_GML_Single_Item_Point.xml";
+        public async Task GeoRSS_SIMPLE_Single_Item_Point() => await TestHelpers.ParseResource(MethodHelpers.GetName(), resources);
 
-            //Open feed file
-            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
-            {
-                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
-            }
-
-            //Assert
-            feed.Should().NotBeNull();
-        }
-
+        /// <summary>
+        /// Parse and verify GML single item point Geo RSS feed.
+        /// </summary>
+        /// <returns>The test method task.</returns>
         [TestMethod]
-        public async Task GML_Feed_Line_Multiple_Item_Point()
-        {
-            //Init
-            Feed feed;
-            var filename = "GeoRSS_GML_Feed_Line_Multiple_Item_Point.xml";
+        public async Task GeoRSS_GML_Single_Item_Point() => await TestHelpers.ParseResource(MethodHelpers.GetName(), resources);
 
-            //Open feed file
-            using (var stream = File.OpenRead($"C:\\Testlab\\Feeds\\{filename}"))
-            {
-                feed = await FeedParser.ParseFeedAsync(filename, stream, CancellationToken.None);
-            }
-
-            //Assert
-            feed.Should().NotBeNull();
-        }
+        /// <summary>
+        /// Parse and verify GML multiple item point Geo RSS feed.
+        /// </summary>
+        /// <returns>The test method task.</returns>
+        [TestMethod]
+        public async Task GeoRSS_GML_Feed_Line_Multiple_Item_Point() => await TestHelpers.ParseResource(MethodHelpers.GetName(), resources);
     }
 }

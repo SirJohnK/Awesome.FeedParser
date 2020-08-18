@@ -6,13 +6,16 @@ using System.Xml;
 
 namespace Awesome.FeedParser.Extensions
 {
+    /// <summary>
+    /// Internal XmlReader extension methods.
+    /// </summary>
     internal static class XmlReaderExtensions
     {
         /// <summary>
         /// Used for easy access of all elements read by an XmlReader.
         /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
+        /// <param name="reader">Current XmlReader.</param>
+        /// <returns>IEnumerable with all start element names.</returns>
         internal static IEnumerable<string> AllElements(this XmlReader reader)
         {
             while (reader.Read())
@@ -22,6 +25,11 @@ namespace Awesome.FeedParser.Extensions
             }
         }
 
+        /// <summary>
+        /// Read all sub tree element names and values.
+        /// </summary>
+        /// <param name="reader">Current XmlReader.</param>
+        /// <returns>List with KeyValuePair with element name and value.</returns>
         internal static async Task<List<KeyValuePair<string, string>>> AllSubTreeElements(this XmlReader reader)
         {
             var rootName = reader.Name;
@@ -33,7 +41,8 @@ namespace Awesome.FeedParser.Extensions
                 {
                     var localName = subTree.LocalName;
                     subTree.ReadStartElement(element);
-                    elements.Add(new KeyValuePair<string, string>(localName, await subTree.ReadContentAsStringAsync()));
+                    var content = await subTree.ReadContentAsStringAsync().ConfigureAwait(false);
+                    elements.Add(new KeyValuePair<string, string>(localName, content));
                 }
             }
             subTree.Close();
@@ -63,7 +72,7 @@ namespace Awesome.FeedParser.Extensions
                 case XmlNodeType.Text:
                 case XmlNodeType.Whitespace:
                     {
-                        text = await reader.ReadContentAsStringAsync();
+                        text = await reader.ReadContentAsStringAsync().ConfigureAwait(false);
                         break;
                     }
 
@@ -75,7 +84,7 @@ namespace Awesome.FeedParser.Extensions
                 case XmlNodeType.Notation:
                 case XmlNodeType.XmlDeclaration:
                     {
-                        text = await reader.ReadOuterXmlAsync();
+                        text = await reader.ReadOuterXmlAsync().ConfigureAwait(false);
                         break;
                     }
             }
@@ -95,6 +104,11 @@ namespace Awesome.FeedParser.Extensions
             return text;
         }
 
+        /// <summary>
+        /// Extract current node information.
+        /// </summary>
+        /// <param name="reader">Current XmlReader.</param>
+        /// <returns>Complete NodeInformation for current node.</returns>
         internal static NodeInformation NodeInformation(this XmlReader reader)
         {
             //Init
@@ -115,12 +129,6 @@ namespace Awesome.FeedParser.Extensions
                 IsEmpty = reader.IsEmptyElement,
                 HasAttributes = reader.HasAttributes,
             };
-        }
-
-        internal static ParseError ParseError(this XmlReader reader, string parser, ParseErrorType errorType, ParseType parseType, string? parseValue = null, string? message = null)
-        {
-            //Return new ParseError with Node and Parse information
-            return new ParseError(reader.NodeInformation(), parser, errorType, parseType, parseValue, message);
         }
     }
 }

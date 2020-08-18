@@ -1,4 +1,4 @@
-﻿using Awesome.FeedParser.Interfaces;
+﻿using Awesome.FeedParser.Interfaces.Common;
 using System;
 using System.Globalization;
 
@@ -7,7 +7,7 @@ namespace Awesome.FeedParser.Models.Media
     /// <summary>
     /// Feed Media Content information.
     /// </summary>
-    public class MediaContent : IEnclosure
+    public class MediaContent : ICommonItemEnclosure
     {
         /// <summary>
         /// Kilobits per second rate of media.
@@ -62,7 +62,7 @@ namespace Awesome.FeedParser.Models.Media
         /// <summary>
         /// IEnclosure interface, feed implementation of Length.
         /// </summary>
-        long? IEnclosure.Length { get => FileSize; }
+        long? ICommonItemEnclosure.Length => FileSize;
 
         /// <summary>
         /// Type of object (image | audio | video | document | executable).

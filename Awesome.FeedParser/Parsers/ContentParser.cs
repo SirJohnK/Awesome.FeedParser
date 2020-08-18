@@ -1,6 +1,9 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
+using Awesome.FeedParser.Interfaces.Content;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -65,7 +68,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             //Attemp to get encoded content
                             target.Content = new FeedContent() { Type = "text/html" };
-                            target.Content.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Content.Type);
+                            target.Content.Text = await reader.ReadStartElementAndContentAsStringAsync(target.Content.Type).ConfigureAwait(false);
                             break;
                         }
 

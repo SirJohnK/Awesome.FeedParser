@@ -1,6 +1,9 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
+using Awesome.FeedParser.Models.Spotify;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -86,11 +89,11 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.Spotify != null)
                             {
                                 //Get Countries of origin
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 try
                                 {
                                     //Attempt to set country of origin list
-                                    feed.Spotify.CountryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country));
+                                    feed.Spotify.countryOfOrigin = content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(country => new RegionInfo(country)).ToList();
                                 }
                                 catch (Exception ex) when (ex is ArgumentNullException || ex is ArgumentException)
                                 {

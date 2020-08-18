@@ -1,6 +1,8 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Models;
+using Awesome.FeedParser.Models.Common;
 using Awesome.FeedParser.Models.Media;
 using System;
 using System.Collections.Generic;
@@ -54,9 +56,10 @@ namespace Awesome.FeedParser.Parsers
                     case "category": //One or more categories that the feed/item belongs to.
                         {
                             //Parse and add category to feed/item catergories list
-                            var categories = target.Categories ?? new List<FeedCategory>();
-                            categories.Add(new FeedCategory() { Domain = reader.GetAttribute("domain"), Category = await reader.ReadStartElementAndContentAsStringAsync() });
-                            target.Categories = categories;
+                            target.Categories ??= new List<FeedCategory>();
+                            var domain = reader.GetAttribute("domain");
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            target.Categories.Add(new FeedCategory() { Domain = domain, Category = content });
                             break;
                         }
 
@@ -119,21 +122,22 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem != null)
                             {
-                                //Get source url
-                                var content = reader.GetAttribute("url");
+                                //Init
+                                var url = reader.GetAttribute("url");
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 //Attempt to parse source
-                                feed.CurrentItem.Source = new FeedLink() { Type = FeedLinkType.Via, Text = await reader.ReadStartElementAndContentAsStringAsync() };
+                                feed.CurrentItem.Source = new FeedLink() { Type = FeedLinkType.Via, Text = content };
 
                                 try
                                 {
                                     //Attempt to parse enclosure URL
-                                    feed.CurrentItem.Source.Url = new Uri(content);
+                                    feed.CurrentItem.Source.Url = new Uri(url);
                                 }
                                 catch (Exception ex) when (ex is ArgumentNullException || ex is UriFormatException)
                                 {
                                     //Unknown node format
-                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, content, $"Node: url, {ex.Message}");
+                                    SetParseError(ParseErrorType.UnknownNodeFormat, nodeInfo, feed, url, $"Node: url, {ex.Message}");
                                 }
                             }
                             else
@@ -149,7 +153,7 @@ namespace Awesome.FeedParser.Parsers
                     default: //Unknown feed/item node
                         {
                             //Try RSS 0.91 Parse
-                            result = await base.Parse(parent, reader, feed, false);
+                            result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
                             if (!result && root) SetParseError(ParseErrorType.UnknownNode, nodeInfo, feed);
                             break;
                         }
@@ -158,7 +162,7 @@ namespace Awesome.FeedParser.Parsers
             else
             {
                 //Try RSS 0.91 Parse
-                result = await base.Parse(parent, reader, feed, false);
+                result = await base.Parse(parent, reader, feed, false).ConfigureAwait(false);
             }
 
             //Return result

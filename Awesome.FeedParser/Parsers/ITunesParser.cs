@@ -1,7 +1,10 @@
 ﻿using Awesome.FeedParser.Extensions;
 using Awesome.FeedParser.Interfaces;
+using Awesome.FeedParser.Interfaces.Common;
+using Awesome.FeedParser.Interfaces.ITunes;
 using Awesome.FeedParser.Models;
-using Awesome.FeedParser.Utils;
+using Awesome.FeedParser.Models.Common;
+using Awesome.FeedParser.Models.ITunes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,13 +73,13 @@ namespace Awesome.FeedParser.Parsers
 
                     case "author": //The group responsible for creating the show/episode.
                         {
-                            target.Author = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Author = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                         }
                         break;
 
                     case "block": //The podcast/episode show or hide status. (true/false/yes/no)
                         {
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             if (bool.TryParse(content, out var blockFlag))
                                 target.Block = blockFlag;
                             else
@@ -86,7 +89,7 @@ namespace Awesome.FeedParser.Parsers
 
                     case "explicit": //The podcast/episode parental advisory information. Explicit language or adult content. (true/false/yes/no)
                         {
-                            var content = await reader.ReadStartElementAndContentAsStringAsync();
+                            var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             if (bool.TryParse(content, out var explicitFlag))
                                 target.Explicit = explicitFlag;
                             else
@@ -120,26 +123,26 @@ namespace Awesome.FeedParser.Parsers
 
                     case "keywords": //List of words or phrases used when searching.
                         {
-                            var words = await reader.ReadStartElementAndContentAsStringAsync();
-                            target.Keywords = words.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(word => word.Trim());
+                            var words = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
+                            target.Keywords = words.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(word => word.Trim()).ToList();
                             break;
                         }
 
                     case "title": //The show/episode title specific for Apple Podcasts.
                         {
-                            target.Title = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Title = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
                     case "subtitle": //Used as the title of the podcast/episode.
                         {
-                            target.Subtitle = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Subtitle = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
                     case "summary": //Description of the podcast/episode.
                         {
-                            target.Summary = await reader.ReadStartElementAndContentAsStringAsync();
+                            target.Summary = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                             break;
                         }
 
@@ -151,7 +154,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.ITunes != null)
                             {
-                                var type = await reader.ReadStartElementAndContentAsStringAsync();
+                                var type = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 switch (type)
                                 {
                                     case "episodic": feed.ITunes.Type = ITunesType.Episodic; break;
@@ -175,7 +178,7 @@ namespace Awesome.FeedParser.Parsers
                                 {
                                     //Decode and save category
                                     var subCategories = new List<string>();
-                                    feed.ITunes.Category ??= new Dictionary<string, IEnumerable<string>>();
+                                    feed.ITunes.Category ??= new Dictionary<string, List<string>>();
                                     feed.ITunes.Category.Add(HttpUtility.HtmlDecode(category), subCategories);
                                     //Subcategories?
                                     if (!reader.IsEmptyElement)
@@ -215,7 +218,7 @@ namespace Awesome.FeedParser.Parsers
                             {
                                 //Get owner information
                                 var owner = new ITunesOwner();
-                                var ownerElements = await reader.AllSubTreeElements();
+                                var ownerElements = await reader.AllSubTreeElements().ConfigureAwait(false);
                                 foreach (var element in ownerElements)
                                 {
                                     switch (element.Key)
@@ -251,7 +254,7 @@ namespace Awesome.FeedParser.Parsers
                             if (feed.ITunes != null)
                             {
                                 //Get docs
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
 
                                 try
                                 {
@@ -278,7 +281,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 if (double.TryParse(content, out var seconds))
                                     //If numeric, assume seconds
                                     feed.CurrentItem.ITunes.Duration = TimeSpan.FromSeconds(seconds);
@@ -299,7 +302,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 switch (content)
                                 {
                                     case "full": feed.CurrentItem.ITunes.EpisodeType = ITunesEpisodeType.Full; break;
@@ -318,7 +321,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 if (int.TryParse(content, out var episode))
                                     feed.CurrentItem.ITunes.Episode = episode;
                                 else
@@ -335,7 +338,7 @@ namespace Awesome.FeedParser.Parsers
                         {
                             if (feed.CurrentItem?.ITunes != null)
                             {
-                                var content = await reader.ReadStartElementAndContentAsStringAsync();
+                                var content = await reader.ReadStartElementAndContentAsStringAsync().ConfigureAwait(false);
                                 if (int.TryParse(content, out var season))
                                     feed.CurrentItem.ITunes.Season = season;
                                 else
