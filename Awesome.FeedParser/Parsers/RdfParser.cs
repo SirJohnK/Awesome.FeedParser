@@ -15,13 +15,22 @@ namespace Awesome.FeedParser.Parsers
     /// </summary>
     internal sealed class RdfParser : BaseParser
     {
-        //Rdf Namespace URI
-        public static string Namespace { get; } = @"http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+        /// <summary>
+        /// Rdf Namespace URI:s.
+        /// </summary>
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
+        };
 
-        //Parser lazy loaded instance
+        /// <summary>
+        /// Parser lazy loaded instance.
+        /// </summary>
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RdfParser());
 
-        //Private constructor to prevent external initalization
+        /// <summary>
+        /// Private constructor to prevent external initalization.
+        /// </summary>
         private RdfParser()
         {
         }

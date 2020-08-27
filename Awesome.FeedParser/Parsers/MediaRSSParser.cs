@@ -19,9 +19,12 @@ namespace Awesome.FeedParser.Parsers
     internal sealed class MediaRSSParser : BaseParser
     {
         /// <summary>
-        /// Media RSS Namespace URI.
+        /// Media RSS Namespace URI:s.
         /// </summary>
-        public static string Namespace { get; } = @"http://search.yahoo.com/mrss/";
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://search.yahoo.com/mrss/" },
+        };
 
         /// <summary>
         /// Parser lazy loaded instance.

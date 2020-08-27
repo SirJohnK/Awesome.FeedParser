@@ -19,13 +19,22 @@ namespace Awesome.FeedParser.Parsers
     /// </summary>
     internal sealed class ITunesParser : BaseParser
     {
-        //iTunes Namespace URI
-        public static string Namespace { get; } = @"http://www.itunes.com/dtds/podcast-1.0.dtd";
+        /// <summary>
+        /// iTunes Namespace URI:s.
+        /// </summary>
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://www.itunes.com/dtds/podcast-1.0.dtd" },
+        };
 
-        //Parser lazy loaded instance
+        /// <summary>
+        /// Parser lazy loaded instance.
+        /// </summary>
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new ITunesParser());
 
-        //Private constructor to prevent external initalization
+        /// <summary>
+        /// Private constructor to prevent external initalization.
+        /// </summary>
         private ITunesParser()
         {
         }

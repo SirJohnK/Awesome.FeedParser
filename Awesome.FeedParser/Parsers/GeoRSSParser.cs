@@ -18,15 +18,23 @@ namespace Awesome.FeedParser.Parsers
     /// </summary>
     internal sealed class GeoRSSParser : BaseParser
     {
-        //Geo RSS Namespace URI:s
-        public static string Namespace => @"http://www.georss.org/georss";
+        /// <summary>
+        /// Geo RSS Namespace URI:s.
+        /// </summary>
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://www.georss.org/georss" },
+            { @"http://www.opengis.net/gml" },
+        };
 
-        public static string SecondNamespace => @"http://www.opengis.net/gml";
-
-        //Parser lazy loaded instance
+        /// <summary>
+        /// Parser lazy loaded instance.
+        /// </summary>
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new GeoRSSParser());
 
-        //Private constructor to prevent external initalization
+        /// <summary>
+        /// Private constructor to prevent external initalization.
+        /// </summary>
         private GeoRSSParser()
         {
         }
@@ -127,7 +135,7 @@ namespace Awesome.FeedParser.Parsers
                 feedTarget.ContentType |= FeedContentType.GeoRSS;
 
                 //Media RSS Parent?
-                var mediaParent = parent.FirstOrDefault(ancestor => ancestor.Namespace == FeedParser.ContentTypeNamespace[FeedContentType.MediaRSS]);
+                var mediaParent = parent.FirstOrDefault(ancestor => FeedParser.ContentTypeNamespace[FeedContentType.MediaRSS].Contains(ancestor.Namespace));
                 if (mediaParent != null)
                 {
                     switch (mediaParent.LocalName)

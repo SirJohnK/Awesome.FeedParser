@@ -14,13 +14,22 @@ namespace Awesome.FeedParser.Parsers
     /// </summary>
     internal class RSS_1_0_Parser : RSS_0_92_Parser
     {
-        //RSS 1.0 Namespace URI
-        public static string Namepace => @"http://purl.org/rss/1.0/";
+        /// <summary>
+        /// RSS 1.0 Namespace URI:s.
+        /// </summary>
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://purl.org/rss/1.0/" },
+        };
 
-        //Parser lazy loaded instance
+        /// <summary>
+        /// Parser lazy loaded instance.
+        /// </summary>
         public new static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new RSS_1_0_Parser());
 
-        //Protected constructor to prevent external initalization
+        /// <summary>
+        /// Protected constructor to prevent external initalization.
+        /// </summary>
         protected RSS_1_0_Parser()
         {
         }
