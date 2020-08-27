@@ -23,34 +23,39 @@ namespace Awesome.FeedParser
         /// <summary>
         /// Supported Namespace Parsers
         /// </summary>
-        private static Dictionary<string, Lazy<IParser>> parsers = new Dictionary<string, Lazy<IParser>>()
-        {
-            { RdfParser.Namespace, RdfParser.Instance },
-            { RSS_1_0_Parser.Namepace, RSS_1_0_Parser.Instance },
-            { AtomParser.Namespace, AtomParser.Instance },
-            { ContentParser.Namespace, ContentParser.Instance },
-            { ITunesParser.Namespace, ITunesParser.Instance },
-            { MediaRSSParser.Namespace, MediaRSSParser.Instance },
-            { SpotifyParser.Namespace, SpotifyParser.Instance },
-            { YoutubeParser.Namespace, YoutubeParser.Instance },
-            { GeoRSSParser.Namespace, GeoRSSParser.Instance },
-            { GeoRSSParser.SecondNamespace, GeoRSSParser.Instance },
-        };
+        private static readonly Dictionary<string, Lazy<IParser>> parsers = new Dictionary<string, Lazy<IParser>>();
 
         /// <summary>
         /// Feed Content Type Parser Namespace lookup dictionary.
         /// </summary>
-        internal static Dictionary<FeedContentType, string> ContentTypeNamespace = new Dictionary<FeedContentType, string>()
+        internal static Dictionary<FeedContentType, IEnumerable<string>> ContentTypeNamespace = new Dictionary<FeedContentType, IEnumerable<string>>()
         {
-            { FeedContentType.Atom, AtomParser.Namespace },
-            { FeedContentType.Content, ContentParser.Namespace },
-            { FeedContentType.GeoRSS, GeoRSSParser.Namespace },
-            { FeedContentType.ITunes, ITunesParser.Namespace },
-            { FeedContentType.MediaRSS, MediaRSSParser.Namespace },
-            { FeedContentType.Rdf, RdfParser.Namespace },
-            { FeedContentType.Spotify, SpotifyParser.Namespace },
-            { FeedContentType.Youtube, YoutubeParser.Namespace },
+            { FeedContentType.Atom, AtomParser.Namespaces },
+            { FeedContentType.Content, ContentParser.Namespaces },
+            { FeedContentType.GeoRSS, GeoRSSParser.Namespaces },
+            { FeedContentType.ITunes, ITunesParser.Namespaces },
+            { FeedContentType.MediaRSS, MediaRSSParser.Namespaces },
+            { FeedContentType.Rdf, RdfParser.Namespaces },
+            { FeedContentType.Spotify, SpotifyParser.Namespaces },
+            { FeedContentType.Youtube, YoutubeParser.Namespaces },
         };
+
+        /// <summary>
+        /// Constructor to setup namespace parsers.
+        /// </summary>
+        static FeedParser()
+        {
+            //Init
+            parsers.AddRange(AtomParser.Namespaces, AtomParser.Instance);
+            parsers.AddRange(ContentParser.Namespaces, ContentParser.Instance);
+            parsers.AddRange(GeoRSSParser.Namespaces, GeoRSSParser.Instance);
+            parsers.AddRange(ITunesParser.Namespaces, ITunesParser.Instance);
+            parsers.AddRange(MediaRSSParser.Namespaces, MediaRSSParser.Instance);
+            parsers.AddRange(RdfParser.Namespaces, RdfParser.Instance);
+            parsers.AddRange(RSS_1_0_Parser.Namespaces, RSS_1_0_Parser.Instance);
+            parsers.AddRange(SpotifyParser.Namespaces, SpotifyParser.Instance);
+            parsers.AddRange(YoutubeParser.Namespaces, YoutubeParser.Instance);
+        }
 
         /// <summary>
         /// Parse root node to determine feed type and feed parser.

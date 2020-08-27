@@ -18,13 +18,22 @@ namespace Awesome.FeedParser.Parsers
     /// </summary>
     internal sealed class AtomParser : BaseParser
     {
-        //Atom Namespace URI
-        public static string Namespace { get; } = @"http://www.w3.org/2005/Atom";
+        /// <summary>
+        /// Atom Namespace URI:s.
+        /// </summary>
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://www.w3.org/2005/Atom" },
+        };
 
-        //Parser lazy loaded instance
+        /// <summary>
+        /// Parser lazy loaded instance.
+        /// </summary>
         public static Lazy<IParser> Instance { get; } = new Lazy<IParser>(() => new AtomParser());
 
-        //Private constructor to prevent external initalization
+        /// <summary>
+        /// Private constructor to prevent external initalization.
+        /// </summary>
         private AtomParser()
         {
         }

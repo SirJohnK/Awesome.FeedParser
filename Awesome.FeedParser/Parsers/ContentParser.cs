@@ -17,9 +17,12 @@ namespace Awesome.FeedParser.Parsers
     internal sealed class ContentParser : BaseParser
     {
         /// <summary>
-        /// Content Namespace URI.
+        /// Content Namespace URI:s.
         /// </summary>
-        public static string Namespace { get; } = @"http://purl.org/rss/1.0/modules/content/";
+        public static IEnumerable<string> Namespaces { get; } = new List<string>()
+        {
+            { @"http://purl.org/rss/1.0/modules/content/" },
+        };
 
         /// <summary>
         /// Parser lazy loaded instance.
