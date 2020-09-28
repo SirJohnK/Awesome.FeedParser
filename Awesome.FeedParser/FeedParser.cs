@@ -32,6 +32,7 @@ namespace Awesome.FeedParser
         {
             { FeedContentType.Atom, AtomParser.Namespaces },
             { FeedContentType.Content, ContentParser.Namespaces },
+            { FeedContentType.DublinCore, DCParser.Namespaces },
             { FeedContentType.GeoRSS, GeoRSSParser.Namespaces },
             { FeedContentType.ITunes, ITunesParser.Namespaces },
             { FeedContentType.MediaRSS, MediaRSSParser.Namespaces },
@@ -48,6 +49,7 @@ namespace Awesome.FeedParser
             //Init
             parsers.AddRange(AtomParser.Namespaces, AtomParser.Instance);
             parsers.AddRange(ContentParser.Namespaces, ContentParser.Instance);
+            parsers.AddRange(DCParser.Namespaces, DCParser.Instance);
             parsers.AddRange(GeoRSSParser.Namespaces, GeoRSSParser.Instance);
             parsers.AddRange(ITunesParser.Namespaces, ITunesParser.Instance);
             parsers.AddRange(MediaRSSParser.Namespaces, MediaRSSParser.Instance);

@@ -17,5 +17,6 @@ namespace Awesome.FeedParser.Models.Common
         Spotify = 32,
         Youtube = 64,
         GeoRSS = 128,
+        DublinCore = 256,
     }
 }

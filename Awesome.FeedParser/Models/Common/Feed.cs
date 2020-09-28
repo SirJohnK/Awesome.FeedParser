@@ -3,6 +3,7 @@ using Awesome.FeedParser.Interfaces.Common;
 using Awesome.FeedParser.Interfaces.Content;
 using Awesome.FeedParser.Interfaces.RSS;
 using Awesome.FeedParser.Models.Atom;
+using Awesome.FeedParser.Models.DublinCore;
 using Awesome.FeedParser.Models.Geo;
 using Awesome.FeedParser.Models.ITunes;
 using Awesome.FeedParser.Models.Media;
@@ -404,6 +405,16 @@ namespace Awesome.FeedParser.Models.Common
         /// Flag indicating if feed has Content information.
         /// </summary>
         public bool HasContent => Content != null;
+
+        /// <summary>
+        /// Flag indicating if feed has Dublin Core information.
+        /// </summary>
+        public bool HasDC => DC != null;
+
+        /// <summary>
+        /// The DublinCore specific feed information.
+        /// </summary>
+        public DCMetaData? DC { get; internal set; }
 
         /// <summary>
         /// Flag indicating if feed has Geographical information.
