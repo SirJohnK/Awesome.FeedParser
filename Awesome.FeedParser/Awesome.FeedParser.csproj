@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <Authors>Johan Svensson</Authors>
     <Company></Company>
-    <Copyright>© 2020 Johan Svensson All Rights Reserved</Copyright>
+    <Copyright>© 2023 Johan Svensson All Rights Reserved</Copyright>
     <RootNamespace>Awesome.FeedParser</RootNamespace>
     <ApplicationIcon>sirjohnk.ico</ApplicationIcon>
     <Title>Awesome.FeedParser</Title>
